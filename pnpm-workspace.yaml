@@ -1,0 +1,6 @@
+packages:
+  - 'common'
+  - 'contracts'
+  - 'indexer'
+  - 'web'
+  - 'helper-services/*'
