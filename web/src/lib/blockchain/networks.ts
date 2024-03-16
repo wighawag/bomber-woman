@@ -65,28 +65,16 @@ export const contractNetwork = derived([contractsInfos], ([$contractsInfos]) => 
 // GameConfig parsed:
 export type GameConfig = Omit<
 	typeof initialContractsInfos.contracts.BomberWoman.linkedData,
-	'numTokensPerGems' | 'revealPhaseDuration' | 'commitPhaseDuration' | 'currency'
+	'revealPhaseDuration' | 'commitPhaseDuration'
 > & {
-	numTokensPerGems: bigint;
 	revealPhaseDuration: number;
 	commitPhaseDuration: number;
-	currency: {
-		symbol: string;
-		name: string;
-		decimals: number;
-	};
 };
 function transformGameConfig(data: typeof initialContractsInfos.contracts.BomberWoman.linkedData) {
 	const newValue = {
 		...data,
-		numTokensPerGems: BigInt(data.numTokensPerGems.slice(0, -1)),
 		revealPhaseDuration: Number(data.revealPhaseDuration.slice(0, -1)),
 		commitPhaseDuration: Number(data.revealPhaseDuration.slice(0, -1)),
-		currency: {
-			symbol: data.currency.symbol,
-			name: data.currency.name,
-			decimals: Number(data.currency.decimals),
-		},
 	};
 	return newValue;
 }

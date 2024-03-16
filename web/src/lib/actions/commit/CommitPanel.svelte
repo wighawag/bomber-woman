@@ -26,27 +26,6 @@
 			],
 		});
 	}
-
-	const symbol = initialContractsInfos.contracts.BomberWoman.linkedData.currency.symbol;
-
-	$: cost =
-		$offchainState.moves === undefined
-			? 0n
-			: BigInt($offchainState.moves.list.length) *
-				BigInt(initialContractsInfos.contracts.BomberWoman.linkedData.numTokensPerGems.slice(0, -1));
-	$: costString = formatUnits(cost, decimals);
-
-	$: currentReserve = $balance.reserve;
-	$: currentReserveString = formatUnits(currentReserve, decimals);
-
-	$: currentBalance = $balance.tokenBalance;
-	$: currentBalnceString = formatUnits(currentBalance, decimals);
-
-	$: depositNeeded = currentReserve < cost ? cost - currentReserve : 0n;
-	$: depositNeededString = formatUnits(depositNeeded, decimals);
-
-	$: enough = currentBalance + currentReserve >= cost; // TODO + gascost for ETH
-
 	$: enoughETH = $balance.nativeBalance >= MINIMUM_REQUIRED_ETH_BALANCE;
 
 	function clear(e: MouseEvent) {

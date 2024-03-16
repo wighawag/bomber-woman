@@ -1,12 +1,8 @@
 import {encodeAbiParameters, keccak256} from 'viem';
-import type {ContractMove} from './types';
+import type {ContractAction, ContractAvatarMove} from './types';
 import * as crypto from 'crypto';
 
-export type Commitment = {
-	hash: `0x${string}`;
-	secret: `0x${string}`;
-	moves: ContractMove[];
-};
+export type Commitment = ContractAvatarMove;
 
 export function randomSecret() {
 	return (`0x` +
@@ -16,29 +12,30 @@ export function randomSecret() {
 }
 
 // TODO support furtherMoves
-export function prepareCommitment(moves: ContractMove[], secret: `0x${string}`) {
+export function prepareCommitment(avatarID: bigint, actions: ContractAction[], secret: `0x${string}`) {
 	const commitmentHash = keccak256(
 		encodeAbiParameters(
 			[
 				{type: 'bytes32', name: 'secret'},
+				{type: 'uint256', name: 'avatarID'},
 				{
+					type: 'tuple[]',
+					name: 'actions',
 					components: [
 						{
-							name: 'position',
-							type: 'uint64',
+							name: 'path',
+							type: 'uint64[]',
 						},
 						{
-							name: 'color',
+							name: 'actionType',
 							type: 'uint8',
 						},
 					],
-					name: 'moves',
-					type: 'tuple[]',
 				},
 			],
-			[secret, moves],
+			[secret, avatarID, actions],
 		),
 	).slice(0, 50) as `0x${string}`;
 
-	return {secret, hash: commitmentHash, moves};
+	return {secret, hash: commitmentHash, actions};
 }

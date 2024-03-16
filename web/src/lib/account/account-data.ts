@@ -3,7 +3,7 @@ import {BaseAccountHandler, type OnChainAction, type OnChainActions, type Reveal
 import {mainnetClient, createClient} from '$utils/fuzd';
 import type {AccountInfo, SyncInfo} from './types';
 import {FUZD_URI, SYNC_DB_NAME, debugTools} from '$lib/config';
-import {xyToBigIntID, type Color, type ContractMove} from 'bomber-woman-common';
+import {xyToBigIntID, type ContractAvatarMove} from 'bomber-woman-common';
 import {writable, type Readable, type Writable} from 'svelte/store';
 import {time} from '$lib/blockchain/time';
 import type {ScheduleInfo} from 'fuzd-scheduler';
@@ -12,38 +12,45 @@ import type {PrivateKeyAccount} from 'viem';
 import {privateKeyToAccount} from 'viem/accounts';
 import {copy} from '$utils/js';
 
-export type LocalMove = {
-	player: string;
-	color: Color;
-	x: number;
-	y: number;
+export type LocalAction = {
+	readonly path: {x: number; y: number}[];
+	readonly actionType: number;
 };
 
-export type LocalMoves = LocalMove[];
-export type OffchainMoves =
+export type LocalMove = {
+	readonly avatarID: bigint;
+	readonly actions: LocalAction[];
+};
+
+export type OffchainPlan =
 	| {
 			timestamp: number;
-			list: [];
+			move: undefined;
 			epoch: undefined;
 	  }
 	| {
 			epoch: number;
 			timestamp: number;
-			list: LocalMoves;
+			move: LocalMove;
 	  };
 
-export function localMoveToContractMove(localMove: LocalMove): ContractMove {
+export function localMoveToContractMove(localMove: LocalMove, secret: `0x${string}`): ContractAvatarMove {
 	return {
-		color: localMove.color,
-		position: xyToBigIntID(localMove.x, localMove.y),
+		actions: localMove.actions.map((a) => {
+			return {
+				path: a.path.map((v) => xyToBigIntID(v.x, v.y)),
+				actionType: a.actionType,
+			};
+		}),
+		avatarID: localMove.avatarID,
+		secret,
 	};
 }
 
 export type CommitMetadata = {
 	type: 'commit';
 	epoch: number;
-	localMoves: LocalMoves;
-	secret: `0x${string}`;
+	localMove: LocalMove;
 	autoReveal:
 		| {
 				type: 'fuzd';
@@ -79,11 +86,7 @@ export function hasCompletedTutorial(progression: number, step: TUTORIAL_STEP): 
 export type OffchainState = {
 	version: number;
 	lastEpochAcknowledged: number;
-	moves: OffchainMoves;
-	currentColor: {
-		timestamp: number;
-		color?: number;
-	};
+	plan: OffchainPlan;
 	tutorial: {
 		timestamp: number;
 		progression: number;
@@ -113,9 +116,8 @@ function defaultData() {
 		onchainActions: {},
 		offchainState: {
 			version: 1,
-			moves: {epoch: 0, timestamp: 0, list: []},
+			plan: {epoch: undefined, timestamp: 0, move: undefined},
 			lastEpochAcknowledged: 0,
-			currentColor: {timestamp: 0},
 			tutorial: {
 				timestamp: 0,
 				progression: 0,
@@ -267,19 +269,11 @@ export class BomberWomanAccountData extends BaseAccountHandler<AccountData, Bomb
 			newDataOnLocal = true;
 		}
 
-		if (remoteData.offchainState.moves.timestamp > newData.offchainState.moves.timestamp) {
-			newData.offchainState.moves = remoteData.offchainState.moves;
+		if (remoteData.offchainState.plan.timestamp > newData.offchainState.plan.timestamp) {
+			newData.offchainState.plan = remoteData.offchainState.plan;
 			newDataOnRemote = true;
-		} else if (newData.offchainState.moves.timestamp > remoteData.offchainState.moves.timestamp) {
-			remoteData.offchainState.moves = newData.offchainState.moves;
-			newDataOnLocal = true;
-		}
-
-		if (remoteData.offchainState.currentColor.timestamp > newData.offchainState.currentColor.timestamp) {
-			newData.offchainState.currentColor = remoteData.offchainState.currentColor;
-			newDataOnRemote = true;
-		} else if (newData.offchainState.currentColor.timestamp > remoteData.offchainState.currentColor.timestamp) {
-			remoteData.offchainState.currentColor = newData.offchainState.currentColor;
+		} else if (newData.offchainState.plan.timestamp > remoteData.offchainState.plan.timestamp) {
+			remoteData.offchainState.plan = newData.offchainState.plan;
 			newDataOnLocal = true;
 		}
 
@@ -349,7 +343,7 @@ export class BomberWomanAccountData extends BaseAccountHandler<AccountData, Bomb
 	// }
 
 	resetOffchainMoves(alsoSave: boolean = true) {
-		this.$data.offchainState.moves = {list: [], timestamp: time.now, epoch: undefined};
+		this.$data.offchainState.plan = {move: undefined, timestamp: time.now, epoch: undefined};
 
 		if (alsoSave) {
 			this._save();
@@ -366,57 +360,34 @@ export class BomberWomanAccountData extends BaseAccountHandler<AccountData, Bomb
 		this._offchainState.set(this.$data.offchainState);
 	}
 
-	addMove(move: LocalMove, epoch: number) {
+	addAction(avatarID: bigint, action: LocalAction, epoch: number) {
 		const timestamp = time.now;
-		if (this.$data.offchainState.moves?.epoch != epoch) {
-			this.$data.offchainState.moves = {list: [move], timestamp, epoch};
+		if (this.$data.offchainState.plan?.epoch != epoch) {
+			this.$data.offchainState.plan = {
+				move: {
+					actions: [action],
+					avatarID,
+				},
+				timestamp,
+				epoch,
+			};
 		} else {
-			const existingMove = this.$data.offchainState.moves?.list.find((v) => v.x === move.x && v.y === move.y);
-			if (!existingMove) {
-				if (this.$data.offchainState.moves.list.length === 0) {
-					this.$data.offchainState.moves = {list: [move], epoch, timestamp};
-				} else {
-					this.$data.offchainState.moves.timestamp = timestamp;
-					this.$data.offchainState.moves.epoch = epoch;
-					this.$data.offchainState.moves.list.push(move);
-				}
-			} else {
-				existingMove.color = move.color;
-			}
+			// const existingMove = this.$data.offchainState.plan?.move.find((v) => v.x === move.x && v.y === move.y);
+			// if (!existingMove) {
+			// 	if (this.$data.offchainState.plan.list.length === 0) {
+			// 		this.$data.offchainState.plan = {list: [move], epoch, timestamp};
+			// 	} else {
+			// 		this.$data.offchainState.plan.timestamp = timestamp;
+			// 		this.$data.offchainState.plan.epoch = epoch;
+			// 		this.$data.offchainState.plan.list.push(move);
+			// 	}
+			// } else {
+			// 	existingMove.color = move.color;
+			// }
 		}
 
 		this._save();
 		this._offchainState.set(this.$data.offchainState);
-	}
-
-	removeMove(x: number, y: number) {
-		const timestamp = time.now;
-		if (this.$data.offchainState.moves) {
-			for (let i = 0; i < this.$data.offchainState.moves.list.length; i++) {
-				const move = this.$data.offchainState.moves.list[i];
-				if (move.x === x && move.y === y) {
-					this.$data.offchainState.moves.list.splice(i, 1);
-					i--;
-				}
-			}
-			if (this.$data.offchainState.moves.list.length === 0) {
-				this.$data.offchainState.moves.timestamp = timestamp;
-				this.$data.offchainState.moves.epoch = undefined;
-			} else {
-				this.$data.offchainState.moves.timestamp = timestamp;
-			}
-
-			this._save();
-			this._offchainState.set(this.$data.offchainState);
-		}
-	}
-
-	back() {
-		// TODO undo
-		// $offchainState.moves.splice($offchainState.moves.length - 1, 1);
-		// $offchainState.timestamp = time.now;
-		// save();
-		// offchainState.set($offchainState);
 	}
 
 	acknowledgeEpoch(epochNumber: number) {
@@ -451,26 +422,6 @@ export class BomberWomanAccountData extends BaseAccountHandler<AccountData, Bomb
 		} else {
 			throw new Error(`Action is not of type "commit"`);
 		}
-	}
-
-	swapCurrentColor() {
-		const colorRotation = debugTools ? 6 : 5;
-
-		// TODO ensure timestamp synced ?
-		const timestamp = time.now;
-
-		// TODO use store ?
-		if (!account.$state.address) {
-			throw new Error(`no address`);
-		}
-		let currentColor = this.$data.offchainState.currentColor.color;
-		if (!currentColor) {
-			currentColor = Number((BigInt(account.$state.address) % 5n) + 1n);
-		}
-		this.$data.offchainState.currentColor.color = (currentColor % colorRotation) + 1;
-		this.$data.offchainState.currentColor.timestamp = timestamp;
-		this._save();
-		this._offchainState.set(this.$data.offchainState);
 	}
 
 	markTutorialAsComplete(step: TUTORIAL_STEP) {

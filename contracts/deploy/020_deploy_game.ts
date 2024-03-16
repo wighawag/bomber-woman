@@ -80,11 +80,6 @@ export default execute(
 				owner: admin,
 				linkedData: {
 					...config,
-					currency: {
-						symbol,
-						name,
-						decimals,
-					},
 					admin,
 				},
 			},
