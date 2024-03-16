@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.0;
 
-import "solidity-kit/solc_0_8/ERC721/interfaces/IERC721.sol";
-import "solidity-kit/solc_0_8/ERC721/interfaces/IERC721Metadata.sol";
-import "solidity-kit/solc_0_8/ERC165/interfaces/IERC165.sol";
 import "./UsingBomberWomanTypes.sol";
 import "./UsingBomberWomanEvents.sol";
 
@@ -51,4 +48,4 @@ interface IBomberWomanReveal is UsingBomberWomanTypes, UsingBomberWomanEvents {
     function acknowledgeMissedReveals(uint256[] memory avatarIDs) external;
 }
 
-interface IBomberWoman is IBomberWomanCommit, IBomberWomanReveal, IBomberWomanGetters, IERC721, IERC721Metadata {}
+interface IBomberWoman is IBomberWomanCommit, IBomberWomanReveal, IBomberWomanGetters {}

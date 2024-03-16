@@ -6,16 +6,16 @@ import "../interface/UsingBomberWomanTypes.sol";
 abstract contract UsingVirtualTime {
     // TODO use hardhat-preprocessor
 
-    ITime immutable _time;
+    ITime immutable TIME;
 
     constructor(UsingBomberWomanTypes.Config memory config) {
-        _time = config.time;
+        TIME = config.time;
     }
 
     function _timestamp() internal view returns (uint256) {
-        if (address(_time) == address(0)) {
+        if (address(TIME) == address(0)) {
             return block.timestamp;
         }
-        return _time.timestamp();
+        return TIME.timestamp();
     }
 }

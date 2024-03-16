@@ -48,8 +48,6 @@ interface UsingBomberWomanTypes {
 
     /// @notice Config struct to configure the game instance
     struct Config {
-        IERC20WithIERC2612 tokens;
-        address payable burnAddress;
         uint256 startTime;
         uint256 commitPhaseDuration;
         uint256 revealPhaseDuration;

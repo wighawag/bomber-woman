@@ -89,8 +89,6 @@ abstract contract UsingBomberWomanState is
     UsingBomberWomanErrors,
     UsingVirtualTime
 {
-    /// @notice The token used for the game. Each gems on the board contains that token
-    IERC20WithIERC2612 internal immutable TOKENS;
     /// @notice the timestamp (in seconds) at which the game start, it start in the commit phase
     uint256 internal immutable START_TIME;
     /// @notice the duration of the commit phase in seconds
@@ -98,13 +96,6 @@ abstract contract UsingBomberWomanState is
     /// @notice the duration of the reveal phase in seconds
     uint256 internal immutable REVEAL_PHASE_DURATION;
     /// @notice the max number of level a cell can reach in the game
-    uint8 internal immutable MAX_LIFE;
-    /// @notice the number of tokens underlying each gems on the board.
-    uint256 internal immutable NUM_TOKENS_PER_GEMS;
-    /// @notice the address to send the token to when burning
-    address payable internal immutable BURN_ADDRESS;
-    /// @notice the generator that will be called whenever a player stake state change
-    IOnStakeChange internal immutable GENERATOR;
 
     /// @notice the number of moves a hash represent, after that players make use of furtherMoves
     uint8 internal constant MAX_NUM_MOVES_PER_HASH = 32;
@@ -112,8 +103,6 @@ abstract contract UsingBomberWomanState is
     /// @notice Create an instance of a BomberWoman game
     /// @param config configuration options for the game
     constructor(Config memory config) UsingVirtualTime(config) {
-        TOKENS = config.tokens;
-        BURN_ADDRESS = config.burnAddress;
         START_TIME = config.startTime;
         COMMIT_PHASE_DURATION = config.commitPhaseDuration;
         REVEAL_PHASE_DURATION = config.revealPhaseDuration;

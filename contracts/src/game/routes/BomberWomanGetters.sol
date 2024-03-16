@@ -19,10 +19,9 @@ contract BomberWomanGetters is IBomberWomanGetters, UsingBomberWomanState {
 
     /// @inheritdoc IBomberWomanGetters
     function getConfig() external view returns (Config memory config) {
-        config.tokens = TOKENS;
-        config.burnAddress = BURN_ADDRESS;
         config.startTime = START_TIME;
         config.commitPhaseDuration = COMMIT_PHASE_DURATION;
         config.revealPhaseDuration = REVEAL_PHASE_DURATION;
+        config.time = TIME;
     }
 }

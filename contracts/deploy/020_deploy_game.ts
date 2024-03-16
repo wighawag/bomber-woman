@@ -8,13 +8,9 @@ import {checksumAddress, parseEther, zeroAddress} from 'viem';
 import {getConfig} from './.config';
 
 export type GameConfig = {
-	tokens: `0x${string}`;
-	numTokensPerGems: bigint;
-	burnAddress: `0x${string}`;
 	startTime: number;
 	commitPhaseDuration: bigint;
 	revealPhaseDuration: bigint;
-	maxLife: number;
 };
 
 export default execute(
@@ -32,15 +28,6 @@ export default execute(
 		let decimals = await env.read(testTokens, {functionName: 'decimals'});
 		let symbol = await env.read(testTokens, {functionName: 'symbol'});
 		let name = await env.read(testTokens, {functionName: 'name'});
-
-		if (configOverride?.tokens == zeroAddress) {
-			// TODO per network
-			decimals = 18;
-			symbol = 'ETH';
-			name = 'Ethers';
-		}
-
-		const numTokensPerGems = BigInt(10) ** BigInt(decimals);
 
 		const admin = accounts.deployer;
 
@@ -60,45 +47,34 @@ export default execute(
 		}
 
 		const config = {
-			tokens: testTokens.address,
-			numTokensPerGems,
-			burnAddress: checksumAddress(`0xDEADDEADDEADDEADDEADDEADDEADDEADDEADDEAD`), //zeroAddress,
-
 			startTime,
 			revealPhaseDuration,
 			commitPhaseDuration,
-			maxLife: 7, // 7 is a good number, because with 4 enemy neighbors, it take 2 turns to die, with 3 it takes 3, with 2 it takes 4, with 1 it takes 7
 			time,
 			...configOverride,
-			generator: generator.address,
 		};
 
+		const args = [config];
+
 		const routes = [
-			{name: 'Getters', artifact: artifacts.BomberWomanGetters, args: [config], account: deployer},
-			{name: 'Commit', artifact: artifacts.BomberWomanCommit, args: [config], account: deployer},
-			{name: 'Reveal', artifact: artifacts.BomberWomanReveal, args: [config], account: deployer},
-			{name: 'Poke', artifact: artifacts.BomberWomanPoke, args: [config], account: deployer},
-			{name: 'ERC721', artifact: artifacts.BomberWomanERC721 as any, args: [config], account: deployer},
+			{name: 'Getters', artifact: artifacts.BomberWomanGetters, args, account: deployer},
+			{name: 'Commit', artifact: artifacts.BomberWomanCommit, args, account: deployer},
+			{name: 'Reveal', artifact: artifacts.BomberWomanReveal, args, account: deployer},
 		];
 		if (network.name === 'hardhat' || network.name === 'memory') {
-			routes.push({name: 'Debug', artifact: artifacts.BomberWomanDebug as any, args: [config], account: deployer});
+			routes.push({name: 'Debug', artifact: artifacts.BomberWomanDebug as any, args, account: deployer});
 		}
 
 		const BomberWoman = await deployViaProxy<typeof artifacts.IBomberWoman.abi>(
 			'BomberWoman',
 			{
 				account: deployer,
-				artifact: (name, args) => {
-					return deployViaRouter(
-						name,
-						{
-							...(args as any),
-						},
-						routes,
-						[artifacts.UsingBomberWomanDebugEvents.abi],
-					) as Promise<Deployment<typeof artifacts.IBomberWoman.abi>>;
+				artifact: (name, params) => {
+					return deployViaRouter(name, {...(params as any)}, routes, [
+						artifacts.UsingBomberWomanDebugEvents.abi,
+					]) as unknown as Promise<Deployment<typeof artifacts.IBomberWoman.abi>>;
 				},
-				args: [config],
+				args,
 			},
 			{
 				owner: admin,

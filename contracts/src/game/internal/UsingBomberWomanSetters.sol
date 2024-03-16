@@ -46,8 +46,7 @@ abstract contract UsingBomberWomanSetters is UsingBomberWomanState, UsingBomberW
                 if (_isValidMove(position, next)) {
                     position = next;
                 }
-                if (actions[i].actionType == ActionType.Bomb) {
-                    CellAtEpoch memory cell = _cells[position][epoch];
+                if (actions[i].actionType == ActionType.Bomb && !_cells[position][epoch].exploded) {
                     _cells[position][epoch].exploded = true;
                 }
             }
