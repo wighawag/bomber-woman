@@ -35,8 +35,8 @@ library logger {
         uint8 ii,
         string memory title,
         uint64 id,
-        UsingBomberWomanTypes.Cell memory cell,
-        address owner
+        uint64 epoch,
+        UsingBomberWomanTypes.CellAtEpoch memory cell
     ) internal view {
         string memory indent = ii == 0
             ? ""
@@ -51,14 +51,8 @@ library logger {
         console.log("%s-------------------------------------------------------------", indent);
         console.log("%scell (%s,%s)", indent, StringUtils.toString(x), StringUtils.toString(y));
         console.log("%s-------------------------------------------------------------", indent);
-        console.log("%s - lastEpochUpdate:  %s", indent, cell.lastEpochUpdate);
-        console.log("%s - epochWhenTokenIsAdded:  %s", indent, cell.epochWhenTokenIsAdded);
-        console.log("%s - color:  %s", indent, uint8(cell.color));
-        console.log("%s - life:  %s", indent, cell.life);
-        console.log("%s - distribution:  %s", indent, cell.distribution);
-        console.log("%s - owner:  %s", indent, owner);
-        console.log("%s - delta: %s", indent, StringUtils.toString(cell.delta));
-        console.log("%s - enemyMap:  %s", indent, cell.enemyMap);
+        console.log("%s - epoch: %s", indent, epoch);
+        console.log("%s - delta: %s", indent, cell.playersExploded);
         console.log("%s-------------------------------------------------------------", indent);
     }
 
@@ -123,9 +117,6 @@ abstract contract UsingBomberWomanState is
         START_TIME = config.startTime;
         COMMIT_PHASE_DURATION = config.commitPhaseDuration;
         REVEAL_PHASE_DURATION = config.revealPhaseDuration;
-        MAX_LIFE = config.maxLife;
-        NUM_TOKENS_PER_GEMS = config.numTokensPerGems;
-        GENERATOR = config.generator;
     }
 
     function _epoch() internal view virtual returns (uint24 epoch, bool commiting) {
@@ -209,33 +200,5 @@ abstract contract UsingBomberWomanState is
             effectiveDelta = int8(1);
             // effectiveDelta = int8(0);
         }
-    }
-
-    function _getUpdatedCell(
-        uint64 position,
-        uint24 epoch
-    ) internal view returns (Cell memory updatedCell, bool justDied) {
-        // load from state
-        updatedCell = _cells[position];
-        uint24 lastUpdate = updatedCell.lastEpochUpdate;
-        int8 delta = updatedCell.delta;
-        uint8 life = updatedCell.life;
-        // logger.logCell(0, 'before update', position, updatedCell, address(uint160(_owners[position])));
-        if (lastUpdate >= 1 && life > 0) {
-            (uint8 newLife, ) = _computeNewLife(lastUpdate, updatedCell.enemyMap, delta, life, epoch);
-            updatedCell.life = newLife;
-            updatedCell.lastEpochUpdate = epoch; // TODO check if this is useful to cap it to epoch where it died
-            justDied = newLife == 0;
-        }
-        int8 effectiveDelta = _effectiveDelta(updatedCell.delta, updatedCell.enemyMap);
-        if (effectiveDelta > 0) {
-            updatedCell.producingEpochs += epoch - lastUpdate;
-        }
-    }
-
-    /// @dev Get the owner of a token.
-    /// @param tokenID The token to query.
-    function _ownerOf(uint256 tokenID) internal view virtual returns (address owner) {
-        owner = address(uint160(_owners[tokenID]));
     }
 }

@@ -9,14 +9,7 @@ contract BomberWomanReveal is IBomberWomanReveal, UsingBomberWomanSetters {
     constructor(Config memory config) UsingBomberWomanSetters(config) {}
 
     /// @inheritdoc IBomberWomanReveal
-    function reveal(
-        address player,
-        bytes32 secret,
-        Move[] calldata moves,
-        bytes24 furtherMoves,
-        bool useReserve,
-        address payable payee
-    ) external payable {
+    function reveal(address player, bytes32 secret, Move[] calldata moves, address payable payee) external payable {
         Commitment storage commitment = _commitments[player];
         (uint24 epoch, bool commiting) = _epoch();
 
@@ -30,21 +23,14 @@ contract BomberWomanReveal is IBomberWomanReveal, UsingBomberWomanSetters {
             revert InvalidEpoch();
         }
 
-        _checkHash(commitment.hash, secret, moves, furtherMoves);
+        _checkHash(commitment.hash, secret, moves);
 
-        uint256 newReserveAmount = _resolveMoves(player, epoch, moves, useReserve ? address(0) : player);
+        _resolveMoves(player, epoch, moves);
 
         bytes24 hashRevealed = commitment.hash;
-        if (furtherMoves != bytes24(0)) {
-            if (moves.length != MAX_NUM_MOVES_PER_HASH) {
-                revert InvalidFurtherMoves();
-            }
-            commitment.hash = furtherMoves;
-        } else {
-            commitment.epoch = 0; // used
-        }
+        commitment.epoch = 0; // used
 
-        emit CommitmentRevealed(player, epoch, hashRevealed, moves, furtherMoves, newReserveAmount);
+        emit CommitmentRevealed(player, epoch, hashRevealed, moves);
 
         if (payee != address(0)) {
             payee.transfer(msg.value);
@@ -52,39 +38,8 @@ contract BomberWomanReveal is IBomberWomanReveal, UsingBomberWomanSetters {
     }
 
     /// @inheritdoc IBomberWomanReveal
-    function acknowledgeMissedReveal(
-        address player,
-        bytes32 secret,
-        Move[] calldata moves,
-        bytes24 furtherMoves
-    ) external {
-        Commitment storage commitment = _commitments[player];
-        (uint24 epoch, ) = _epoch();
-        if (commitment.epoch == 0 || commitment.epoch == epoch) {
-            revert CanStillReveal();
-        }
-
-        uint256 numMoves = moves.length;
-
-        _checkHash(commitment.hash, secret, moves, furtherMoves);
-
-        if (furtherMoves != bytes24(0)) {
-            if (numMoves != MAX_NUM_MOVES_PER_HASH) {
-                revert InvalidFurtherMoves();
-            }
-            commitment.hash = furtherMoves;
-        } else {
-            commitment.epoch = 0; // used
-        }
-
-        uint256 amount = moves.length;
-        _tokensInReserve[msg.sender] -= amount;
-        TOKENS.transfer(BURN_ADDRESS, amount);
-        emit CommitmentVoid(player, epoch, amount, furtherMoves);
-    }
-
-    /// @inheritdoc IBomberWomanReveal
-    function acknowledgeMissedRevealByBurningAllReserve() external {
+    function acknowledgeMissedReveal(address player) external {
+        // TODO
         Commitment storage commitment = _commitments[msg.sender];
         (uint24 epoch, ) = _epoch();
 
@@ -97,12 +52,11 @@ contract BomberWomanReveal is IBomberWomanReveal, UsingBomberWomanSetters {
         }
 
         commitment.epoch = 0;
-        uint256 amount = _tokensInReserve[msg.sender];
-        _tokensInReserve[msg.sender] = 0;
-        TOKENS.transfer(BURN_ADDRESS, amount);
+
+        // TODO block nft control
 
         // here we cannot know whether there were further move or even any moves
         // we just burn all tokens in reserve
-        emit CommitmentVoid(msg.sender, epoch, amount, bytes24(0));
+        emit CommitmentVoid(msg.sender, epoch);
     }
 }

@@ -19,12 +19,6 @@ interface UsingBomberWomanErrors is UsingBomberWomanTypes {
     /// @notice If player lost the information to reveal, it can acknowledge failure which will burn all its reserve.\
     error PreviousCommitmentNotRevealed();
 
-    /// @notice to make a commitment you always need at least one `config.numTokensPerGems` amount in reserve
-    ///  Player also need one `config.numTokensPerGems`  per moves during the Reveal phase.
-    /// @param inReserve amount in reserver as the time of the call
-    /// @param expected amount required to proceed
-    error ReserveTooLow(uint256 inReserve, uint256 expected);
-
     /// @notice Player have to reveal their commitment using the exact same move values
     ///  If they provide different value, the commitment hash will differ and BomberWoman will reject their reveal.
     error CommitmentHashNotMatching();
@@ -35,11 +29,6 @@ interface UsingBomberWomanErrors is UsingBomberWomanTypes {
     /// @notice Player can only reveal their move in the same epoch they commited.abi
     ///  If a player reveal later it can only do to minimize the reserve burn cost by calling : `acknowledgeMissedReveal`
     error InvalidEpoch();
-
-    /// @notice Player can make arbitrary number of moves per epoch. To do so they group moves into (MAX_NUM_MOVES_PER_HASH = 32) moves
-    ///  This result in a recursive series of hash that they can then submit in turn while revealing.
-    ///  The limit  (MAX_NUM_MOVES_PER_HASH = 32) ensure a reveal batch fits in a block.
-    error InvalidFurtherMoves();
 
     /// @notice Player have to reveal if they can
     /// BomberWoman will prevent them from acknowledging missed reveal if there is still time to reveal.

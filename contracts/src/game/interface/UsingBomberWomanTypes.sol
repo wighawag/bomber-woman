@@ -12,21 +12,16 @@ interface UsingBomberWomanTypes {
     // EXTERNAL TYPES
     // --------------------------------------------------------------------------------------------
 
-    /// @notice The set of possible color (None indicate the Cell is empty)
-    enum Color {
+    /// @notice The set of possible action
+    enum Action {
         None,
-        Blue,
-        Red,
-        Green,
-        Yellow,
-        Purple,
-        Evil
+        Bomb
     }
 
-    /// @notice Move struct that define position and color
+    /// @notice Move struct that define position and action
     struct Move {
         uint64 position; // TODO make it bigger ? uint32 * uint32 is probably infinitely big enough
-        Color color;
+        Action action;
     }
 
     /// @notice Permit struct to authorize EIP2612 ERC20 contracts
@@ -45,52 +40,35 @@ interface UsingBomberWomanTypes {
         uint256 startTime;
         uint256 commitPhaseDuration;
         uint256 revealPhaseDuration;
-        uint8 maxLife;
-        uint256 numTokensPerGems;
         ITime time;
-        IOnStakeChange generator;
     }
 
-    /// @notice Cell struct representing the current state of a cell
-    struct FullCell {
-        address owner;
-        uint24 lastEpochUpdate;
-        uint24 epochWhenTokenIsAdded;
-        uint24 producingEpochs;
-        Color color;
-        uint8 life;
-        int8 delta;
-        uint8 enemyMap;
-        uint8 distribution;
-        uint8 stake; // for Evil, else always 1
+    struct PlayerAvatarResolved {
+        uint120 stake;
+        uint64 position;
+        uint64 epoch;
+        uint8 bombs;
+        bool dead;
     }
 
     // --------------------------------------------------------------------------------------------
     // STORAGE TYPES
     // --------------------------------------------------------------------------------------------
 
-    struct Discovered {
-        uint32 minX;
-        uint32 maxX;
-        uint32 minY;
-        uint32 maxY;
+    struct CellAtEpoch {
+        bool playersExploded; // only mark cell where there was a player
     }
 
-    struct Cell {
-        uint24 lastEpochUpdate;
-        uint24 epochWhenTokenIsAdded;
-        uint24 producingEpochs;
-        Color color;
-        uint8 life;
-        int8 delta;
-        uint8 enemyMap;
-        uint8 distribution; // this encode who is left to be given reward (4 left most bits) and the reard (4 most right bits)
-        uint8 stake; // for Evil, else always 1
+    struct PlayerAvatar {
+        uint120 stake;
+        uint64 position;
+        uint64 epoch;
+        uint8 bombs;
     }
 
     struct Commitment {
         bytes24 hash;
-        uint24 epoch;
+        uint64 epoch;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -105,21 +83,5 @@ interface UsingBomberWomanTypes {
     struct TokenTransferCollection {
         TokenTransfer[] transfers;
         uint256 numTransfers;
-    }
-
-    struct MoveTokens {
-        uint256 tokensPlaced;
-        uint256 tokensBurnt;
-        uint256 tokensReturned;
-    }
-
-    struct DisplayData {
-        string x;
-        string y;
-        string life;
-        string delta;
-        string creationEpoch;
-        string factionName;
-        string factionColor;
     }
 }

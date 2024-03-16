@@ -5,22 +5,10 @@ import "../interface/UsingBomberWomanTypes.sol";
 import "../interface/UsingBomberWomanErrors.sol";
 
 abstract contract UsingBomberWomanUtils is UsingBomberWomanTypes, UsingBomberWomanErrors {
-    function _checkHash(
-        bytes24 commitmentHash,
-        bytes32 secret,
-        Move[] memory moves,
-        bytes24 furtherMoves
-    ) internal pure {
-        if (furtherMoves != bytes24(0)) {
-            bytes24 computedHash = bytes24(keccak256(abi.encode(secret, moves, furtherMoves)));
-            if (commitmentHash != computedHash) {
-                revert CommitmentHashNotMatching();
-            }
-        } else {
-            bytes24 computedHash = bytes24(keccak256(abi.encode(secret, moves)));
-            if (commitmentHash != computedHash) {
-                revert CommitmentHashNotMatching();
-            }
+    function _checkHash(bytes24 commitmentHash, bytes32 secret, Move[] memory moves) internal pure {
+        bytes24 computedHash = bytes24(keccak256(abi.encode(secret, moves)));
+        if (commitmentHash != computedHash) {
+            revert CommitmentHashNotMatching();
         }
     }
 

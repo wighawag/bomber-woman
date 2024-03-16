@@ -9,11 +9,7 @@ interface IBomberWomanDebug is UsingBomberWomanDebugTypes, UsingBomberWomanDebug
     error InvalidCellOverwrite();
     error InvalidLifeConfiguration(uint256 life, int32 x, int32 y);
 
-    function forceMoves(address player, Move[] memory moves) external;
-
-    function forceSimpleCells(SimpleCell[] memory cells) external;
-
-    function getRawCell(uint256 id) external view returns (Cell memory cell);
+    function getRawCell(uint64 position, uint64 epoch) external view returns (CellAtEpoch memory cell);
 }
 
 interface IBomberWomanWithDebug is IBomberWoman, IBomberWomanDebug {}

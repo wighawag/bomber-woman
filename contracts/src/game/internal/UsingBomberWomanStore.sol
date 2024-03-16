@@ -4,18 +4,7 @@ pragma solidity ^0.8.0;
 import "../interface/UsingBomberWomanTypes.sol";
 
 contract UsingBomberWomanStore is UsingBomberWomanTypes {
-    mapping(uint256 => Cell) internal _cells;
-    mapping(uint256 => uint256) internal _owners; //owner + approval + ... erc721
-
-    Discovered _discovered;
-
-    mapping(address => uint256) internal _tokensInReserve;
+    mapping(uint64 => mapping(uint64 => CellAtEpoch)) internal _cells;
+    mapping(uint256 => PlayerAvatar) internal _avatars;
     mapping(address => Commitment) internal _commitments;
-
-    // Operators (also used by ERC721)
-    mapping(address => mapping(address => bool)) internal _operatorsForAll;
-    mapping(uint256 => address) internal _operators;
-
-    // ERC721 balanceOf
-    // mapping(address => uint256) internal _balances;
 }

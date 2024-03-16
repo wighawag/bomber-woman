@@ -8,50 +8,20 @@ contract BomberWomanGetters is IBomberWomanGetters, UsingBomberWomanState {
     constructor(Config memory config) UsingBomberWomanState(config) {}
 
     /// @inheritdoc IBomberWomanGetters
-    function getCell(uint256 id) external view returns (FullCell memory) {
-        (uint24 epoch, ) = _epoch();
-        // console.log('epoch %s', epoch);
-        (Cell memory updatedCell, ) = _getUpdatedCell(uint64(id), epoch);
-        return
-            FullCell({
-                owner: _ownerOf(id),
-                lastEpochUpdate: updatedCell.lastEpochUpdate,
-                epochWhenTokenIsAdded: updatedCell.epochWhenTokenIsAdded,
-                producingEpochs: updatedCell.producingEpochs,
-                color: updatedCell.color,
-                life: updatedCell.life,
-                delta: updatedCell.delta,
-                enemyMap: updatedCell.enemyMap,
-                distribution: updatedCell.distribution,
-                stake: updatedCell.stake
-            });
-    }
-
-    /// @inheritdoc IBomberWomanGetters
-    function getCells(uint256[] memory ids) external view returns (FullCell[] memory cells) {
-        (uint24 epoch, ) = _epoch();
-        uint256 numCells = ids.length;
-        cells = new FullCell[](numCells);
-        for (uint256 i = 0; i < numCells; i++) {
-            (Cell memory updatedCell, ) = _getUpdatedCell(uint64(ids[i]), epoch);
-            cells[i] = FullCell({
-                owner: _ownerOf(ids[i]),
-                lastEpochUpdate: updatedCell.lastEpochUpdate,
-                epochWhenTokenIsAdded: updatedCell.epochWhenTokenIsAdded,
-                producingEpochs: updatedCell.producingEpochs,
-                color: updatedCell.color,
-                life: updatedCell.life,
-                delta: updatedCell.delta,
-                enemyMap: updatedCell.enemyMap,
-                distribution: updatedCell.distribution,
-                stake: updatedCell.stake
-            });
+    function getPlayeAvatar(uint256 id) external view returns (PlayerAvatarResolved memory) {
+        PlayerAvatar memory avatar = _avatars[id];
+        bool dead = false;
+        if (_cells[avatar.position][avatar.epoch].playersExploded) {
+            dead = true;
         }
-    }
-
-    /// @inheritdoc IBomberWomanGetters
-    function getTokensInReserve(address account) external view returns (uint256 amount) {
-        return _tokensInReserve[account];
+        return
+            PlayerAvatarResolved({
+                stake: avatar.stake,
+                position: avatar.position,
+                epoch: avatar.epoch,
+                bombs: avatar.bombs,
+                dead: dead
+            });
     }
 
     /// @inheritdoc IBomberWomanGetters
@@ -66,7 +36,5 @@ contract BomberWomanGetters is IBomberWomanGetters, UsingBomberWomanState {
         config.startTime = START_TIME;
         config.commitPhaseDuration = COMMIT_PHASE_DURATION;
         config.revealPhaseDuration = REVEAL_PHASE_DURATION;
-        config.maxLife = MAX_LIFE;
-        config.numTokensPerGems = NUM_TOKENS_PER_GEMS;
     }
 }
