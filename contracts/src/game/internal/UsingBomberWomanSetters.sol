@@ -12,8 +12,8 @@ abstract contract UsingBomberWomanSetters is UsingBomberWomanState, UsingBomberW
 
     constructor(Config memory config) UsingBomberWomanState(config) {}
 
-    function _makeCommitment(address player, bytes24 commitmentHash) internal {
-        Commitment storage commitment = _commitments[player];
+    function _makeCommitment(uint256 avatarID, bytes24 commitmentHash) internal {
+        Commitment storage commitment = _commitments[avatarID];
 
         (uint24 epoch, bool commiting) = _epoch();
 
@@ -27,28 +27,14 @@ abstract contract UsingBomberWomanSetters is UsingBomberWomanState, UsingBomberW
         commitment.hash = commitmentHash;
         commitment.epoch = epoch;
 
-        emit CommitmentMade(player, epoch, commitmentHash);
+        emit CommitmentMade(avatarID, epoch, commitmentHash);
     }
 
-    function _resolveMoves(address player, uint64 epoch, Move[] memory moves) internal {
-        // max number of transfer is (4+1) * moves.length
-        // (for each move's cell's neighbours potentially being a different account)
-        // limiting the number of move per commitment reveal to 32 or, even more probably, should cover this unlikely scenario
-        TokenTransferCollection memory transferCollection = TokenTransferCollection({
-            transfers: new TokenTransfer[](moves.length * 5),
-            numTransfers: 0
-        });
-        for (uint256 i = 0; i < moves.length; i++) {
-            _computeMove(transferCollection, player, epoch, moves[i]);
+    function _resolveActions(uint256 avatarID, uint64 epoch, Action[] memory actions) internal {
+        for (uint256 i = 0; i < actions.length; i++) {
+            _computeAction(avatarID, epoch, actions[i]);
         }
-
-        _multiTransfer(TOKENS, transferCollection);
     }
 
-    function _computeMove(
-        TokenTransferCollection memory transferCollection,
-        address player,
-        uint64 epoch,
-        Move memory move
-    ) internal {}
+    function _computeAction(uint256 avatarID, uint64 epoch, Action memory action) internal {}
 }

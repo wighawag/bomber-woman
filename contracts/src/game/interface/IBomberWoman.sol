@@ -9,12 +9,12 @@ import "./UsingBomberWomanEvents.sol";
 
 interface IBomberWomanGetters is UsingBomberWomanTypes, UsingBomberWomanEvents {
     /// @notice Get the avatar state
-    /// @param id the avatar id to retrieve
-    function getPlayeAvatar(uint256 id) external view returns (PlayerAvatarResolved memory);
+    /// @param avatarID the avatar id to retrieve
+    function getPlayeAvatar(uint256 avatarID) external view returns (PlayerAvatarResolved memory);
 
     /// @notice The commitment to be revealed. zeroed if no commitment need to be made.
-    /// @param account the address of which to retrieve the commitment
-    function getCommitment(address account) external view returns (Commitment memory commitment);
+    /// @param avatarID the address of which to retrieve the commitment
+    function getCommitment(uint256 avatarID) external view returns (Commitment memory commitment);
 
     /// @notice return the config used to initialise the Game
     function getConfig() external view returns (Config memory config);
@@ -26,14 +26,14 @@ interface IBomberWomanCommit is UsingBomberWomanTypes, UsingBomberWomanEvents {
     ///  When a commitment is made, it needs to be revealed in the reveal phase of the same epoch.abi
     ///  If missed, player can still reveal its moves but none of them will be resolved.
     ///   The player would lose its associated reserved amount.
-    /// @param commitmentHash the hash of the moves
+    /// @param commitments the avatarId, hash pair which the action belongs to
     /// @param payee address to send ETH to along the commitment. Can be used to pay for reveal
-    function makeCommitment(bytes24 commitmentHash, address payable payee) external payable;
+    function makeCommitments(CommitmentSubmission[] calldata commitments, address payable payee) external payable;
 
     /// @notice called by players to cancel their current commitment
     ///  Can only be called during the commit phase in which the commitment was made
     ///  It cannot be called afterward
-    function cancelCommitment() external;
+    function cancelCommitments(uint256[] calldata avatarIDs) external;
 }
 
 interface IBomberWomanReveal is UsingBomberWomanTypes, UsingBomberWomanEvents {
@@ -41,16 +41,14 @@ interface IBomberWomanReveal is UsingBomberWomanTypes, UsingBomberWomanEvents {
     ///  this is where the core logic of the game takes place
     ///  This is where the game board evolves
     ///  The game is designed so that reveal order does not matter
-    /// @param player the account who committed the move
-    /// @param secret the secret used to make the commit
     /// @param moves the actual moves
     /// @param payee address to send ETH to along the reveal
-    function reveal(address player, bytes32 secret, Move[] calldata moves, address payable payee) external payable;
+    function reveal(AvatarMove[] calldata moves, address payable payee) external payable;
 
     /// @notice should only be called as last resort
     /// this will burn all tokens in reserve
     /// If player has access to the secret, better call `acknowledgeMissedReveal`
-    function acknowledgeMissedReveal(address player) external;
+    function acknowledgeMissedReveals(uint256[] memory avatarIDs) external;
 }
 
 interface IBomberWoman is IBomberWomanCommit, IBomberWomanReveal, IBomberWomanGetters, IERC721, IERC721Metadata {}

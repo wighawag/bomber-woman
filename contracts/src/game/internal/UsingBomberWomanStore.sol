@@ -6,5 +6,5 @@ import "../interface/UsingBomberWomanTypes.sol";
 contract UsingBomberWomanStore is UsingBomberWomanTypes {
     mapping(uint64 => mapping(uint64 => CellAtEpoch)) internal _cells;
     mapping(uint256 => PlayerAvatar) internal _avatars;
-    mapping(address => Commitment) internal _commitments;
+    mapping(uint256 => Commitment) internal _commitments;
 }

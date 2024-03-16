@@ -25,8 +25,8 @@ contract BomberWomanGetters is IBomberWomanGetters, UsingBomberWomanState {
     }
 
     /// @inheritdoc IBomberWomanGetters
-    function getCommitment(address account) external view returns (Commitment memory commitment) {
-        return _commitments[account];
+    function getCommitment(uint256 avatarID) external view returns (Commitment memory commitment) {
+        return _commitments[avatarID];
     }
 
     /// @inheritdoc IBomberWomanGetters

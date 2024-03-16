@@ -13,15 +13,28 @@ interface UsingBomberWomanTypes {
     // --------------------------------------------------------------------------------------------
 
     /// @notice The set of possible action
-    enum Action {
+    enum ActionType {
         None,
         Bomb
     }
 
-    /// @notice Move struct that define position and action
-    struct Move {
-        uint64 position; // TODO make it bigger ? uint32 * uint32 is probably infinitely big enough
-        Action action;
+    /// @notice Move struct that define the action, type and position
+    struct Action {
+        uint64[] path;
+        ActionType action;
+    }
+
+    /// @notice Move struct that define position and actions for one avatar
+    struct AvatarMove {
+        uint256 avatarID;
+        Action[] actions;
+        bytes32 secret;
+    }
+
+    /// @notice Commitment Submission data, avatar and hash
+    struct CommitmentSubmission {
+        uint256 avatarID;
+        bytes24 hash;
     }
 
     /// @notice Permit struct to authorize EIP2612 ERC20 contracts
