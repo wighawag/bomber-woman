@@ -84,7 +84,7 @@ export default execute(
 			routes.push({name: 'Debug', artifact: artifacts.BomberWomanDebug as any, args: [config], account: deployer});
 		}
 
-		const bomberWoman = await deployViaProxy<typeof artifacts.IBomberWoman.abi>(
+		const BomberWoman = await deployViaProxy<typeof artifacts.IBomberWoman.abi>(
 			'BomberWoman',
 			{
 				account: deployer,
@@ -117,31 +117,31 @@ export default execute(
 		const desiredWeight = parseEther('1');
 		const weight = await env.read(generator, {
 			functionName: 'games',
-			args: [bomberWoman.address],
+			args: [BomberWoman.address],
 		});
 
 		if (weight != desiredWeight) {
 			await env.execute(generator, {
 				account: deployer,
 				functionName: 'enableGame',
-				args: [bomberWoman.address, desiredWeight],
+				args: [BomberWoman.address, desiredWeight],
 			});
 		}
 
 		const globalApproval = await env.read(testTokens, {
 			functionName: 'globalApprovals',
-			args: [bomberWoman.address],
+			args: [BomberWoman.address],
 		});
 
 		if (!globalApproval) {
 			await env.execute(testTokens, {
 				account: deployer,
 				functionName: 'authorizeGlobalApprovals',
-				args: [[bomberWoman.address], true],
+				args: [[BomberWoman.address], true],
 			});
 		}
 
-		const addressesToAuthorize = Object.values(env.accounts).concat([bomberWoman.address]);
+		const addressesToAuthorize = Object.values(env.accounts).concat([BomberWoman.address]);
 		const anyNotAuthorized = await env.read(testTokens, {
 			functionName: 'anyNotAuthorized',
 			args: [addressesToAuthorize],

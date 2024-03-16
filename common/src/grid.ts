@@ -1,6 +1,6 @@
 import {zeroAddress} from 'viem';
 import {Color, ContractFullCell} from './types';
-import {bigIntIDToXY, xyToBigIntID} from './bomberWoman';
+import {bigIntIDToXY, xyToBigIntID} from './bomber-woman';
 import {EVIL_OWNER_ADDRESS} from './constants';
 
 export type Cell = {
