@@ -10,7 +10,7 @@ import "./UsingBomberWomanEvents.sol";
 interface IBomberWomanGetters is UsingBomberWomanTypes, UsingBomberWomanEvents {
     /// @notice Get the avatar state
     /// @param avatarID the avatar id to retrieve
-    function getPlayeAvatar(uint256 avatarID) external view returns (PlayerAvatarResolved memory);
+    function getAvatar(uint256 avatarID) external view returns (AvatarResolved memory);
 
     /// @notice The commitment to be revealed. zeroed if no commitment need to be made.
     /// @param avatarID the address of which to retrieve the commitment

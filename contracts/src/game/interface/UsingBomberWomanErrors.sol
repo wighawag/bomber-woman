@@ -31,8 +31,13 @@ interface UsingBomberWomanErrors is UsingBomberWomanTypes {
     error InvalidEpoch();
 
     /// @notice Player have to reveal if they can
-    /// BomberWoman will prevent them from acknowledging missed reveal if there is still time to reveal.
+    /// prevent player from acknowledging missed reveal if there is still time to reveal.
     error CanStillReveal();
+
+    /// @notice Player have to reveal if they can
+    /// @param avatarID the id of the dead avatar
+    /// The avatar is dead, no action possible
+    error AvatarIsDead(uint256 avatarID);
 
     /// @notice The cell configuration is invalid
     /// This can happen win debug mode where admin can setup cell bypassing moves rules

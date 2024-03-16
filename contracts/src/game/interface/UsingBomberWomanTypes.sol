@@ -20,8 +20,8 @@ interface UsingBomberWomanTypes {
 
     /// @notice Move struct that define the action, type and position
     struct Action {
-        uint64[] path;
-        ActionType action;
+        uint64[] path; // we use position instead of delta so we can add teleport or other path mechanisms
+        ActionType actionType;
     }
 
     /// @notice Move struct that define position and actions for one avatar
@@ -56,7 +56,7 @@ interface UsingBomberWomanTypes {
         ITime time;
     }
 
-    struct PlayerAvatarResolved {
+    struct AvatarResolved {
         uint120 stake;
         uint64 position;
         uint64 epoch;
@@ -69,10 +69,10 @@ interface UsingBomberWomanTypes {
     // --------------------------------------------------------------------------------------------
 
     struct CellAtEpoch {
-        bool playersExploded; // only mark cell where there was a player
+        bool exploded;
     }
 
-    struct PlayerAvatar {
+    struct Avatar {
         uint120 stake;
         uint64 position;
         uint64 epoch;

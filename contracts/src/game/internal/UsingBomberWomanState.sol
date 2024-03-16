@@ -26,7 +26,7 @@ library logger {
 
     // _sendLogPayload(abi.encodeWithSignature('log(string,int256,int256)', 'cell %s', x, y));
 
-    function logPosition(string memory title, uint64 pos) internal view {
+    function logPosition(string memory title, uint64 pos) internal pure {
         (int32 x, int32 y) = pos.toXY();
         console.log("%s: (%s,%s)", title, StringUtils.toString(x), StringUtils.toString(y));
     }
@@ -37,7 +37,7 @@ library logger {
         uint64 id,
         uint64 epoch,
         UsingBomberWomanTypes.CellAtEpoch memory cell
-    ) internal view {
+    ) internal pure {
         string memory indent = ii == 0
             ? ""
             : ii == 1
@@ -52,7 +52,7 @@ library logger {
         console.log("%scell (%s,%s)", indent, StringUtils.toString(x), StringUtils.toString(y));
         console.log("%s-------------------------------------------------------------", indent);
         console.log("%s - epoch: %s", indent, epoch);
-        console.log("%s - delta: %s", indent, cell.playersExploded);
+        console.log("%s - delta: %s", indent, cell.exploded);
         console.log("%s-------------------------------------------------------------", indent);
     }
 
@@ -130,75 +130,23 @@ abstract contract UsingBomberWomanState is
         commiting = timePassed - ((epoch - 2) * epochDuration) < COMMIT_PHASE_DURATION;
     }
 
-    function _computeNewLife(
-        uint24 lastUpdate,
-        uint8 enemyMap,
-        int8 delta,
-        uint8 life,
-        uint24 epoch
-    ) internal view returns (uint8 newLife, uint24 epochUsed) {
-        epochUsed = lastUpdate;
-        if (lastUpdate >= 1 && life > 0) {
-            uint256 epochDelta = epoch - lastUpdate;
-            if (epochDelta > 0) {
-                int8 effectiveDelta = _effectiveDelta(delta, enemyMap);
-                if (effectiveDelta > 0) {
-                    // if (life < MAX_LIFE) {
-                    uint8 maxEpoch = ((MAX_LIFE - life) + uint8(effectiveDelta) - 1) / uint8(effectiveDelta);
-                    if (epochDelta > maxEpoch) {
-                        epochDelta = maxEpoch;
-                    }
-
-                    life += uint8(epochDelta) * uint8(effectiveDelta);
-                    if (life > MAX_LIFE) {
-                        life = MAX_LIFE;
-                    }
-                    newLife = life;
-
-                    // we don not use the following: lastUpdate + epochDelta;
-                    //   because no state change is foreseen with no life increase
-                    epochUsed = epoch;
-                    // } else {
-                    // 	newLife = life;
-                    // 	epochUsed = lastUpdate;
-                    // }
-                } else if (effectiveDelta < 0) {
-                    uint8 numEpochBeforeDying = (life + uint8(-effectiveDelta) - 1) / uint8(-effectiveDelta);
-                    if (epochDelta > numEpochBeforeDying) {
-                        epochDelta = numEpochBeforeDying;
-                    }
-                    uint8 lifeLoss = uint8(epochDelta) * uint8(-effectiveDelta);
-                    if (lifeLoss > life) {
-                        newLife = 0;
-                    } else {
-                        newLife = life - lifeLoss;
-                    }
-
-                    // since we need to track when the cell died, we upate lastUpdate only to
-                    //   the corresponding epoch where life reached 0
-                    epochUsed = lastUpdate + uint24(epochDelta);
-                } else {
-                    newLife = life;
-
-                    // we don not use the following: lastUpdate + epochDelta;
-                    //   because no state change is foreseen with no life change
-                    epochUsed = epoch;
-                }
-            } else {
-                newLife = life;
-
-                // no change, no need to update lastUpdate either ?
-                epochUsed = lastUpdate;
-            }
+    function _getResolvedAvatar(uint256 avatarID) internal view returns (AvatarResolved memory) {
+        Avatar memory avatar = _avatars[avatarID];
+        bool dead = false;
+        if (_cells[avatar.position][avatar.epoch].exploded) {
+            dead = true;
         }
+        return
+            AvatarResolved({
+                stake: avatar.stake,
+                position: avatar.position,
+                epoch: avatar.epoch,
+                bombs: avatar.bombs,
+                dead: dead
+            });
     }
 
-    function _effectiveDelta(int8 delta, uint8 enemyMap) internal pure returns (int8 effectiveDelta) {
-        // effectiveDelta = delta != 0 ? delta : -1;
-        effectiveDelta = delta > 0 ? int8(1) : -1;
-        if (effectiveDelta < 0 && enemyMap == 0) {
-            effectiveDelta = int8(1);
-            // effectiveDelta = int8(0);
-        }
+    function _getAvatar(uint256 avatarID) internal view returns (Avatar memory) {
+        return _avatars[avatarID];
     }
 }

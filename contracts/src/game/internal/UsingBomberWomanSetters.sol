@@ -13,6 +13,12 @@ abstract contract UsingBomberWomanSetters is UsingBomberWomanState, UsingBomberW
     constructor(Config memory config) UsingBomberWomanState(config) {}
 
     function _makeCommitment(uint256 avatarID, bytes24 commitmentHash) internal {
+        AvatarResolved memory avatar = _getResolvedAvatar(avatarID);
+
+        if (avatar.dead) {
+            revert AvatarIsDead(avatarID);
+        }
+
         Commitment storage commitment = _commitments[avatarID];
 
         (uint24 epoch, bool commiting) = _epoch();
@@ -31,10 +37,25 @@ abstract contract UsingBomberWomanSetters is UsingBomberWomanState, UsingBomberW
     }
 
     function _resolveActions(uint256 avatarID, uint64 epoch, Action[] memory actions) internal {
+        Avatar memory avatar = _getAvatar(avatarID);
+        uint64 position = avatar.position;
         for (uint256 i = 0; i < actions.length; i++) {
-            _computeAction(avatarID, epoch, actions[i]);
+            uint64[] memory path = actions[i].path;
+            for (uint256 j = 0; j < path.length; j++) {
+                uint64 next = path[j];
+                if (_isValidMove(position, next)) {
+                    position = next;
+                }
+                if (actions[i].actionType == ActionType.Bomb) {
+                    CellAtEpoch memory cell = _cells[position][epoch];
+                    _cells[position][epoch].exploded = true;
+                }
+            }
         }
     }
 
-    function _computeAction(uint256 avatarID, uint64 epoch, Action memory action) internal {}
+    function _isValidMove(uint64 from, uint64 to) internal pure returns (bool valid) {
+        // TODO
+        valid = true;
+    }
 }

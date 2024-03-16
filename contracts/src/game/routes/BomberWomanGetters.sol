@@ -8,20 +8,8 @@ contract BomberWomanGetters is IBomberWomanGetters, UsingBomberWomanState {
     constructor(Config memory config) UsingBomberWomanState(config) {}
 
     /// @inheritdoc IBomberWomanGetters
-    function getPlayeAvatar(uint256 id) external view returns (PlayerAvatarResolved memory) {
-        PlayerAvatar memory avatar = _avatars[id];
-        bool dead = false;
-        if (_cells[avatar.position][avatar.epoch].playersExploded) {
-            dead = true;
-        }
-        return
-            PlayerAvatarResolved({
-                stake: avatar.stake,
-                position: avatar.position,
-                epoch: avatar.epoch,
-                bombs: avatar.bombs,
-                dead: dead
-            });
+    function getAvatar(uint256 avatarID) external view returns (AvatarResolved memory) {
+        return _getResolvedAvatar(avatarID);
     }
 
     /// @inheritdoc IBomberWomanGetters
