@@ -17,8 +17,7 @@
 
 ---
 
-# 👾🌍 BomberMan on-chain
-
+# 👾🌍 Bomber Woman
 
 ## 💻 Install
 
@@ -132,4 +131,3 @@ for etherscan if the network is not supported by default (no endpoint), you can 
 ```bash
 pnpm contracts:verify <network> etherscan --endpoint <api endpoint url>
 ```
-
