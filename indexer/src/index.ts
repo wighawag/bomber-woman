@@ -1,6 +1,6 @@
 import {MergedAbis, JSProcessor, fromJSProcessor} from 'ethereum-indexer-js-processor';
 import contractsInfo from './contracts';
-import {Registry, type RegistryState} from 'jolly-roger-common';
+import {Registry, type RegistryState} from 'bomberman-onchain-common';
 
 // We instantiate the registry (js-version)
 // This will take care of keeping track of changes to the state
@@ -9,7 +9,7 @@ import {Registry, type RegistryState} from 'jolly-roger-common';
 // predicting the outcome of updates for examples
 const registry = new Registry();
 
-const JollyRogerIndexerProcessor: JSProcessor<MergedAbis<typeof contractsInfo.contracts>, RegistryState> = {
+const BombermanOnchainIndexerProcessor: JSProcessor<MergedAbis<typeof contractsInfo.contracts>, RegistryState> = {
 	// version is automatically populated via version.cjs to let the browser knows to reindex on changes
 	// this only work if the content of the generated file is changed, so if it import changed files, this won't be detected
 	version: '__VERSION_HASH__',
@@ -29,7 +29,7 @@ const JollyRogerIndexerProcessor: JSProcessor<MergedAbis<typeof contractsInfo.co
 	},
 };
 
-export const createProcessor = fromJSProcessor(() => JollyRogerIndexerProcessor);
+export const createProcessor = fromJSProcessor(() => BombermanOnchainIndexerProcessor);
 
 /*
 // The alternative to use an handler is to perform all the step right in that indexer file
@@ -41,7 +41,7 @@ export type Data = {
 	greetings: {account: `0x${string}`; message: string}[];
 };
 
-const JollyRogerIndexerProcessor: JSProcessor<MergedAbis<typeof contractsInfo.contracts>, Data> = {
+const BombermanOnchainIndexerProcessor: JSProcessor<MergedAbis<typeof contractsInfo.contracts>, Data> = {
 	// version is automatically populated via version.cjs to let the browser knows to reindex on changes
 	version: '__VERSION_HASH__',
 	
@@ -71,5 +71,5 @@ const JollyRogerIndexerProcessor: JSProcessor<MergedAbis<typeof contractsInfo.co
 	},
 };
 
-export const createProcessor = fromJSProcessor(() => JollyRogerIndexerProcessor);
+export const createProcessor = fromJSProcessor(() => BombermanOnchainIndexerProcessor);
 */

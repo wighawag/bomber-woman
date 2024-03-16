@@ -21,10 +21,10 @@
 
 	<div class="actions">
 		<h1 class="use-it">Use it:</h1>
-		<CopyBlock text={`npx degit wighawag/jolly-roger your-app-folder`} />
+		<CopyBlock text={`npx degit wighawag/bomberman-onchain your-app-folder`} />
 		<p class="more-info">
 			Find out more on
-			<a class="underline" href="https://github.com/wighawag/jolly-roger#readme" target="_blank" rel="noreferrer"
+			<a class="underline" href="https://github.com/wighawag/bomberman-onchain#readme" target="_blank" rel="noreferrer"
 				>github</a
 			>
 		</p>

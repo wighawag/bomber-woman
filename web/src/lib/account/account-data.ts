@@ -6,19 +6,19 @@ export type SendMessageMetadata = {
 	type: 'message';
 	message: string;
 };
-export type JollyRogerMetadata = SendMessageMetadata;
+export type BombermanOnchainMetadata = SendMessageMetadata;
 
-export type JollyRogerTransaction = EIP1193TransactionWithMetadata & {
-	metadata?: JollyRogerMetadata;
+export type BombermanOnchainTransaction = EIP1193TransactionWithMetadata & {
+	metadata?: BombermanOnchainMetadata;
 };
 
 export type AccountData = {
-	onchainActions: OnChainActions<JollyRogerMetadata>;
+	onchainActions: OnChainActions<BombermanOnchainMetadata>;
 };
 
 function fromOnChainActionToPendingTransaction(
 	hash: `0x${string}`,
-	onchainAction: OnChainAction<JollyRogerMetadata>,
+	onchainAction: OnChainAction<BombermanOnchainMetadata>,
 ): PendingTransaction {
 	return {
 		hash,
@@ -29,10 +29,10 @@ function fromOnChainActionToPendingTransaction(
 	} as PendingTransaction;
 }
 
-export class JollyRogerAccountData extends BaseAccountHandler<AccountData, JollyRogerMetadata> {
+export class BombermanOnchainAccountData extends BaseAccountHandler<AccountData, BombermanOnchainMetadata> {
 	constructor() {
 		super(
-			'jolly-roger',
+			'bomberman-onchain',
 			() => ({
 				onchainActions: {},
 			}),

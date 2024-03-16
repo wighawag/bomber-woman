@@ -67,10 +67,10 @@
 <!-- Disable native prompt from browsers -->
 <NoInstallPrompt />
 <!-- You can also add your own Install Prompt: -->
-<!-- <Install src={url('/icon.svg')} alt="Jolly Roger" /> -->
+<!-- <Install src={url('/icon.svg')} alt="Bomberman Onchain" /> -->
 
 <!-- Here is Notification for new version -->
-<NewVersionNotification src={url('/icon.svg')} alt="Jolly Roger" />
+<NewVersionNotification src={url('/icon.svg')} alt="Bomberman Onchain" />
 
 <style>
 	/* We wrap our app in this div */

@@ -60,7 +60,7 @@ importers:
       hardhat-rocketh:
         specifier: ^1.0.4
         version: 1.0.4(rocketh@0.7.4)
-      jolly-roger-common:
+      bomberman-onchain-common:
         specifier: workspace:*
         version: link:../common
       ldenv:
@@ -126,7 +126,7 @@ importers:
       ethereum-indexer-js-processor:
         specifier: ^0.6.27
         version: 0.6.27(typescript@5.3.3)
-      jolly-roger-common:
+      bomberman-onchain-common:
         specifier: workspace:*
         version: link:../common
       named-logs:
@@ -175,10 +175,10 @@ importers:
       immer:
         specifier: ^10.0.3
         version: 10.0.3
-      jolly-roger-common:
+      bomberman-onchain-common:
         specifier: workspace:*
         version: link:../common
-      jolly-roger-indexer:
+      bomberman-onchain-indexer:
         specifier: workspace:*
         version: link:../indexer
       lodash-es:

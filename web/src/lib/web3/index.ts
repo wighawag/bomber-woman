@@ -8,21 +8,21 @@ import {
 	doNotEncryptLocally,
 	syncInfo,
 } from '$lib/config';
-import {JollyRogerAccountData} from '$lib/account/account-data';
+import {BombermanOnchainAccountData} from '$lib/account/account-data';
 import {initTransactionProcessor} from 'ethereum-tx-observer';
 import {initViemContracts} from 'web3-connection-viem';
 import {logs} from 'named-logs';
 import {stringToHex} from 'viem';
 import {get} from 'svelte/store';
 
-const logger = logs('jolly-roger');
+const logger = logs('bomberman-onchain');
 
-export const accountData = new JollyRogerAccountData();
+export const accountData = new BombermanOnchainAccountData();
 
 // devNetwork is used for different purposes:
 //  - allow to detect Metamask cache issue
 //  - allow to perform raw call like eth_setNextTimestamp, etc...
-// But note that Jolly-Roger is designed to work without external RPC
+// But note that Bomberman-Onchain is designed to work without external RPC
 // All other request will go through the user's wallet provider
 // This is of course configurable, see PUBLIC_ETH_NODE_URI and PUBLIC_ETH_NODE_URI_<network name>
 const devNetwork =
@@ -70,7 +70,7 @@ const stores = init({
 				if (!signature) {
 					async function signMessage() {
 						const msg = stringToHex(
-							'Welcome to Jolly-Roger, Please sign this message only on trusted frontend. This gives access to your local data that you are supposed to keep secret.',
+							'Welcome to Bomberman-Onchain, Please sign this message only on trusted frontend. This gives access to your local data that you are supposed to keep secret.',
 						);
 						const signature = await state.connection.provider
 							.request({

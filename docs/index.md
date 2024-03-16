@@ -3,9 +3,9 @@
 layout: home
 
 hero:
-  name: "Jolly-Roger"
+  name: "Bomberman-Onchain"
   text: "Build and Deploy for Eternity."
-  tagline: "Jolly Roger is a production-ready template for decentralised applications."
+  tagline: "Bomberman Onchain is a production-ready template for decentralised applications."
   image:
     src: /icon.svg
     width: 512

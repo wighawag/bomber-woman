@@ -1,8 +1,8 @@
 <script lang="ts">
 	import {name} from 'web-config';
 	import {route, url} from '$lib/utils/path';
-	import Feature from '$lib/components/jolly-roger/Feature.svelte';
-	import Showcase from '$lib/components/jolly-roger/Showcase.svelte';
+	import Feature from '$lib/components/bomberman-onchain/Feature.svelte';
+	import Showcase from '$lib/components/bomberman-onchain/Showcase.svelte';
 	import CopyBlock from '$lib/components/utilities/CopyBlock.svelte';
 </script>
 
@@ -26,7 +26,7 @@
 			class="secondary"
 			target="_blank"
 			rel="noreferrer"
-			href="https://github.com/wighawag/jolly-roger"
+			href="https://github.com/wighawag/bomberman-onchain"
 			aria-label="Check it out on github!"
 		>
 			Github
@@ -35,10 +35,10 @@
 
 	<div class="use">
 		<h2>Use it:</h2>
-		<CopyBlock text={`npx degit wighawag/jolly-roger your-app-folder`} />
+		<CopyBlock text={`npx degit wighawag/bomberman-onchain your-app-folder`} />
 		<p>
 			Find out more on
-			<a href="https://github.com/wighawag/jolly-roger#readme" target="_blank" rel="noreferrer">github</a>
+			<a href="https://github.com/wighawag/bomberman-onchain#readme" target="_blank" rel="noreferrer">github</a>
 		</p>
 	</div>
 </section>

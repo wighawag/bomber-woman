@@ -1,4 +1,4 @@
-import {createProcessor} from 'jolly-roger-indexer';
+import {createProcessor} from 'bomberman-onchain-indexer';
 import {createIndexerState, keepStateOnIndexedDB} from 'ethereum-indexer-browser';
 import {initialContractsInfos} from '$lib/config';
 import {connection, network} from '$lib/web3';
@@ -28,7 +28,7 @@ export const {
 } = createIndexerState(processor, {
 	trackNumRequests: true,
 	// logRequests: true,
-	keepState: keepStateOnIndexedDB('jolly-roger', remoteIndexedState) as any, // TODO types
+	keepState: keepStateOnIndexedDB('bomberman-onchain', remoteIndexedState) as any, // TODO types
 });
 
 async function indexIfNotIndexing() {

@@ -21,9 +21,9 @@ const isRunningOnVercel = !!process.env.VERCEL;
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  base: isRunningOnVercel ? '/' : '/jolly-roger/',
-  title: "Jolly Roger",
-  description: "Build and Deploy for Eternity. Jolly Roger is a production-ready template for decentralised applications.",
+  base: isRunningOnVercel ? '/' : '/bomberman-onchain/',
+  title: "Bomberman Onchain",
+  description: "Build and Deploy for Eternity. Bomberman Onchain is a production-ready template for decentralised applications.",
   head: [
     
   ],
@@ -47,7 +47,7 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/wighawag/jolly-roger#readme' },
+      { icon: 'github', link: 'https://github.com/wighawag/bomberman-onchain#readme' },
       { icon: 'twitter', link: 'https://twitter.com/jollyroger_eth' },
     ],
 

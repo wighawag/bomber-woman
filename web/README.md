@@ -1,4 +1,4 @@
-# Jolly Roger Frontend
+# Bomberman Onchain Frontend
 
 The frontend is build on svelte-kit
 
@@ -16,7 +16,7 @@ Furthermore, it is often the case that some local data need to be kept hidden
 
 ## Architecture
 
-Jolly-Roger supports all of this and is architected around this same patterns
+Bomberman-Onchain supports all of this and is architected around this same patterns
 
 The blockchain folder handle the indexed State. it make use of [ethereum-indexer] to have the indexing run in the browser.
 

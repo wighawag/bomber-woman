@@ -3,7 +3,7 @@ import {state, syncing} from './State';
 import {accountData} from '$lib/web3';
 import {getAddress} from 'viem';
 import {createDraft, finishDraft} from 'immer';
-import {Registry} from 'jolly-roger-common';
+import {Registry} from 'bomberman-onchain-common';
 
 import {logs} from 'named-logs';
 const logger = logs(`pending-state`);

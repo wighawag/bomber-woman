@@ -7,7 +7,7 @@
 </script>
 
 <Modal>
-	<h3 class="title">Welcome to Jolly-Roger</h3>
+	<h3 class="title">Welcome to Bomberman-Onchain</h3>
 	<p class="message">
 		In order to continue and get a safe place to save data, you'll need to sign a message. Be carefull and only sign
 		this message on trusted frontend.

@@ -1,8 +1,8 @@
-<h1 align="center"> Jolly Roger </h1>
+<h1 align="center"> Bomberman Onchain </h1>
 
 <p align="center">
-  <a href="https://jolly-roger.eth.limo">
-    <img src="docs/public/icon.svg" alt="Jolly-Roger Logo" width="300">
+  <a href="https://bomberman-onchain.eth.limo">
+    <img src="docs/public/icon.svg" alt="Bomberman-Onchain Logo" width="300">
   </a>
 </p>
 
@@ -11,12 +11,12 @@
     <img alt="Twitter" src="https://img.shields.io/badge/Twitter-1DA1F2?logo=twitter&logoColor=white" />
   </a>
 
-  <a href="https://github.com/wighawag/jolly-roger/commits">
-    <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/wighawag/jolly-roger">
+  <a href="https://github.com/wighawag/bomberman-onchain/commits">
+    <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/wighawag/bomberman-onchain">
   </a>
 
-  <a href="https://github.com/wighawag/jolly-roger/issues">
-    <img alt="open issues" src="https://isitmaintained.com/badge/open/wighawag/jolly-roger.svg">
+  <a href="https://github.com/wighawag/bomberman-onchain/issues">
+    <img alt="open issues" src="https://isitmaintained.com/badge/open/wighawag/bomberman-onchain.svg">
   </a>
 </p>
 
@@ -24,7 +24,7 @@
 
 # Build and Deploy for Eternity
 
-Jolly Roger is a production-ready template for decentralised applications.
+Bomberman Onchain is a production-ready template for decentralised applications.
 
 # How to use?
 

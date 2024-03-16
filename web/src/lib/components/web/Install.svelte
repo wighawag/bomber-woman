@@ -62,7 +62,7 @@
 		class="overlay"
 	>
 		<PromptCard {src} {alt} on:accept={install} on:reject={decline}>
-			Do you want to install Jolly Roger on your home screen?
+			Do you want to install Bomberman Onchain on your home screen?
 			<span slot="accept">Install</span>
 			<span slot="reject">Decline</span>
 		</PromptCard>

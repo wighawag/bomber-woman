@@ -1,7 +1,7 @@
 {
-  "name": "jolly-roger-web",
+  "name": "bomberman-onchain-web",
   "version": "0.0.1",
-  "description": "Frontend for jolly-roger.",
+  "description": "Frontend for bomberman-onchain.",
   "type": "module",
   "private": true,
   "devDependencies": {
@@ -28,8 +28,8 @@
     "ethereum-indexer-browser": "^0.6.28",
     "ethereum-tx-observer": "^0.0.3",
     "immer": "^10.0.3",
-    "jolly-roger-common": "workspace:*",
-    "jolly-roger-indexer": "workspace:*",
+    "bomberman-onchain-common": "workspace:*",
+    "bomberman-onchain-indexer": "workspace:*",
     "lodash-es": "^4.17.21",
     "lz-string": "^1.5.0",
     "named-logs": "^0.2.2",
