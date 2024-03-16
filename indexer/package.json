@@ -1,15 +1,15 @@
 {
-  "name": "bomberman-onchain-indexer",
+  "name": "bomber-woman-indexer",
   "version": "0.1.0",
-  "description": "bomberman-onchain indexer function to generate the state of all the registry messages",
+  "description": "bomberWoman indexer function to generate the state of all the registry messages",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
-    "bomberman-onchain-common": "workspace:*",
     "ethereum-indexer-js-processor": "^0.6.28",
-    "named-logs": "^0.2.2"
+    "named-logs": "^0.2.2",
+    "bomber-woman-common": "workspace:*"
   },
   "devDependencies": {
     "ethereum-indexer-cli": "^0.6.27",
@@ -17,7 +17,7 @@
     "ldenv": "^0.3.9",
     "prettier": "^3.2.5",
     "tsup": "^8.0.2",
-    "typescript": "^5.4.2",
+    "typescript": "^5.3.3",
     "wait-on": "^7.2.0"
   },
   "scripts": {

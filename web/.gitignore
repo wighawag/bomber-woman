@@ -2,7 +2,7 @@
 .env*.local
 
 # node modules
-node_modules
+/node_modules
 
 # vscode
 .vscode/*
@@ -22,4 +22,7 @@ static/pwa
 
 # generated from contracts
 src/data/contracts.ts
-static/indexed-state-*.json
+static/indexed-states/*
+
+# Sentry Auth Token
+.env.sentry-build-plugin

@@ -1,12 +1,12 @@
 {
-	"name": "Bomberman Onchain",
-	"title": "Bomberman Onchain - Template for Decentralised Applications.",
-	"description": "Build and Deploy for Eternity. Bomberman Onchain is a production-ready template for decentralised applications.",
-	"canonicalURL": "https://bomberman-onchain.eth.limo",
-	"ENSName": "bomberman-onchain.eth",
+	"name": "BomberWoman",
+	"title": "BomberWoman",
+	"description": "BomberWoman an Autonomous World being created by players",
+	"canonicalURL": "https://bomberWoman.world",
+	"ENSName": "bomberWoman.eth",
 	"themeColor": "#000000",
 	"appleStatusBarStyle": "black-translucent",
-	"icon": "static/icon.svg",
+	"icon": "static/icon.png",
 	"maskableIcons": [
 		{
 			"src": "../maskable_icon_512x512.png",

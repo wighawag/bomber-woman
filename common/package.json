@@ -1,5 +1,5 @@
 {
-  "name": "bomberman-onchain-common",
+  "name": "bomber-woman-common",
   "version": "0.0.0",
   "description": "Common lib",
   "type": "module",
@@ -7,13 +7,15 @@
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
-    "named-logs": "^0.2.2"
+    "@types/node": "^20.11.19",
+    "named-logs": "^0.2.2",
+    "viem": "^2.7.12"
   },
   "devDependencies": {
     "ldenv": "^0.3.9",
     "prettier": "^3.2.5",
     "tsup": "^8.0.2",
-    "typescript": "^5.4.2"
+    "typescript": "^5.3.3"
   },
   "scripts": {
     "build": "tsup src/index.ts --dts --format esm,cjs",

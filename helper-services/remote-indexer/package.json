@@ -1,0 +1,12 @@
+{
+    "name": "remote-indexer-service",
+    "devDependencies": {
+        "ethereum-indexer-cli": "^0.6.27",
+        "ethereum-indexer-server": "^0.6.29",
+        "bomber-woman-indexer": "workspace:*"
+    },
+    "scripts": {
+        "dev": "eis -p bomber-woman-indexer -d ../../contracts/deployments/localhost -n http://127.0.0.1:8545 --port 34003",
+        "generate": "ei -f data.json -p bomber-woman-indexer -d ../../contracts/deployments/localhost -n http://127.0.0.1:8545--port 34003"
+    }
+}

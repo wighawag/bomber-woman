@@ -1,16 +1,16 @@
-import localCache from '$lib/utils/localCache';
+import localCache from '$utils/localCache';
 import {writable} from 'svelte/store';
 import type {Readable, Writable} from 'svelte/store';
 import {xchacha20poly1305} from '@noble/ciphers/chacha';
 import {randomBytes} from '@noble/ciphers/webcrypto/utils';
 import {base64url} from '@scure/base';
-import {compressToUint8Array, decompressFromUint8Array} from '$lib/utils/data';
+import {compressToUint8Array, decompressFromUint8Array} from '$utils/data';
 import {privateKeyToAccount, type PrivateKeyAccount} from 'viem/accounts';
 import {hexToBytes} from 'viem';
-import {time} from '$lib/time';
+import {time} from '$lib/blockchain/time';
 
 import {logs} from 'named-logs';
-import type {AccountInfo, MergeFunction, SyncInfo} from './types';
+import type {AccountInfo, CleanFunction, MergeFunction, SyncInfo} from './types';
 const logger = logs('AccountDB');
 
 const LOCAL_STORAGE_PRIVATE_ACCOUNT = '_account';
@@ -44,6 +44,7 @@ export class AccountDB<T extends Record<string, unknown>> implements Readable<Sy
 		dbName: string,
 		protected accountInfo: AccountInfo,
 		protected merge: MergeFunction<T>,
+		protected clean: CleanFunction<T>,
 		syncInfo?: SyncInfo,
 	) {
 		if (accountInfo.localKey) {
@@ -187,7 +188,7 @@ export class AccountDB<T extends Record<string, unknown>> implements Readable<Sy
 				}
 			}
 			if (newDataOnLocal && this.state.data) {
-				this._postToRemote(this.state.data, counter);
+				this._postToRemote(this.clean(this.state.data), counter);
 			}
 			this.state.remoteFetchedAtLeastOnce = true;
 		}
@@ -209,7 +210,7 @@ export class AccountDB<T extends Record<string, unknown>> implements Readable<Sy
 			notified = true;
 		}
 		if (newDataOnLocal) {
-			await this._saveToLocalStorage(this.state.data);
+			await this._saveToLocalStorage(this.clean(this.state.data));
 		}
 		return notified;
 	}
@@ -334,6 +335,7 @@ export class AccountDB<T extends Record<string, unknown>> implements Readable<Sy
 			throw new Error(`no sync URI`);
 		}
 		return fetch(this.syncURI, {
+			// TODO env variable
 			method: 'POST',
 			body: JSON.stringify({
 				method,

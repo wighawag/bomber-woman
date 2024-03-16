@@ -8,8 +8,8 @@ wezterm.on('gui-startup', function(cmd)
 
 
   }
-  tab:set_title 'bomberman-onchain'
-  window:set_title 'bomberman-onchain'
+  tab:set_title 'bomberWoman'
+  window:set_title 'bomberWoman'
 
 	local pane_indexer = pane:split {
     args = {'bash', '-i', '-c', 'cd '.. cmd.args[1] .. '; sleep 1; pnpm indexer:dev; bash'},

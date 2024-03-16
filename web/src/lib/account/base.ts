@@ -1,17 +1,32 @@
 import type {PendingTransaction, EIP1193TransactionWithMetadata, PendingTransactionState} from 'ethereum-tx-observer';
 import type {AccountHandler, AccountInfo, OnPendingTransaction, SyncInfo} from './types';
-import {initEmitter, type Emitter} from 'radiate';
+import {initEmitter} from 'radiate';
 import {AccountDB} from './account-db';
 import {writable, type Readable, type Writable} from 'svelte/store';
+import type {ScheduleInfo} from 'fuzd-scheduler';
+
+export type RevealMetadata = {
+	type: 'reveal';
+	commitTx: `0x${string}`;
+};
 
 export type OnChainAction<T> = {
 	tx: EIP1193TransactionWithMetadata<T>;
+	revealTx?: PendingTransaction;
+	fuzd?: {timestamp: number; state: 'replaced' | ScheduleInfo};
 } & PendingTransactionState;
 export type OnChainActions<T> = {[hash: `0x${string}`]: OnChainAction<T>};
 
+// TODO export this type in radiate
+type Emitter<T> = {
+	on: (func: (v: T) => void) => () => void;
+	off: (func: (v: T) => void) => void;
+	emit(v: T): void;
+};
+
 export abstract class BaseAccountHandler<
 	T extends {onchainActions: OnChainActions<Metadata>},
-	Metadata extends Record<string, unknown>,
+	Metadata extends Record<string, unknown> | undefined,
 > implements AccountHandler<T, Metadata>
 {
 	private emitter: Emitter<{name: 'newTx'; txs: PendingTransaction[]} | {name: 'clear'}>;
@@ -40,6 +55,8 @@ export abstract class BaseAccountHandler<
 
 	abstract _merge(localData?: T, remoteData?: T): {newData: T; newDataOnLocal: boolean; newDataOnRemote: boolean};
 
+	abstract _clean(data: T): T;
+
 	updateTx(pendingTransaction: PendingTransaction): void {
 		if (this._updateTx(pendingTransaction)) {
 			this._onchainActions.set(this.$data.onchainActions);
@@ -62,7 +79,7 @@ export abstract class BaseAccountHandler<
 	off(f: OnPendingTransaction): void {
 		this.emitter.off(f);
 	}
-	onTxSent(tx: EIP1193TransactionWithMetadata<any>, hash: `0x${string}`): void {
+	onTxSent(tx: EIP1193TransactionWithMetadata, hash: `0x${string}`): void {
 		this._addAction(tx, hash, 'Broadcasted');
 		this._save();
 	}
@@ -95,17 +112,29 @@ export abstract class BaseAccountHandler<
 	/// ----------------
 
 	_updateTx(pendingTransaction: PendingTransaction): boolean {
-		const action = this.$data.onchainActions[pendingTransaction.hash];
-		if (action) {
-			if (
-				action.inclusion !== pendingTransaction.inclusion ||
-				action.status !== pendingTransaction.status ||
-				action.final !== pendingTransaction.final
-			) {
-				action.inclusion = pendingTransaction.inclusion;
-				action.status = pendingTransaction.status;
-				action.final = pendingTransaction.final;
-				return true;
+		if (pendingTransaction.request.metadata && pendingTransaction.request.metadata.type === 'reveal') {
+			const action = this.$data.onchainActions[pendingTransaction.request.metadata.commitTx];
+			if (action) {
+				action.revealTx = {...pendingTransaction};
+				if (action.revealTx.final) {
+					delete this.$data.onchainActions[pendingTransaction.request.metadata.commitTx];
+					// TODO return deleted fields
+					return true;
+				}
+			}
+		} else {
+			const action = this.$data.onchainActions[pendingTransaction.hash];
+			if (action) {
+				if (
+					action.inclusion !== pendingTransaction.inclusion ||
+					action.status !== pendingTransaction.status ||
+					action.final !== pendingTransaction.final
+				) {
+					action.inclusion = pendingTransaction.inclusion;
+					action.status = pendingTransaction.status;
+					action.final = pendingTransaction.final;
+					return true;
+				}
 			}
 		}
 		return false;
@@ -120,6 +149,29 @@ export abstract class BaseAccountHandler<
 			if (!('type' in tx.metadata)) {
 				console.error(`no field "type" in the metadata and so do not conform to Expected Metadata`);
 			}
+		}
+
+		if (tx.metadata && (tx.metadata as any).type === 'reveal') {
+			const data: RevealMetadata = tx.metadata as RevealMetadata;
+			const action = this.$data.onchainActions[data.commitTx];
+			const pendingTransaction = {
+				hash,
+				request: tx,
+				inclusion: inclusion || 'BeingFetched',
+				final: undefined,
+				status: undefined,
+			} as PendingTransaction;
+			if (action) {
+				action.revealTx = pendingTransaction;
+			}
+			this._save();
+			this._onchainActions.set(this.$data.onchainActions);
+
+			this.emitter.emit({
+				name: 'newTx',
+				txs: [pendingTransaction],
+			});
+			return;
 		}
 
 		const onchainAction: OnChainAction<Metadata> = {
@@ -153,12 +205,22 @@ export abstract class BaseAccountHandler<
 			const onchainAction = (onChainActions as any)[hash];
 			const tx = this.fromOnChainActionToPendingTransaction(hash as `0x${string}`, onchainAction);
 			pending_transactions.push(tx);
+			if (onchainAction.revealTx) {
+				const tx = {
+					hash: onchainAction.revealTx.hash,
+					request: onchainAction.revealTx.request,
+					final: onchainAction.revealTx.final,
+					inclusion: onchainAction.revealTx.inclusion,
+					status: onchainAction.revealTx.status,
+				} as PendingTransaction;
+				pending_transactions.push(tx);
+			}
 		}
 		this.emitter.emit({name: 'newTx', txs: pending_transactions});
 	}
 
 	async _load(info: AccountInfo, syncInfo?: SyncInfo): Promise<T> {
-		this.accountDB = new AccountDB(this.dbName, info, this._merge, syncInfo);
+		this.accountDB = new AccountDB(this.dbName, info, this._merge, this._clean, syncInfo);
 
 		this.unsubscribeFromSync = this.accountDB.subscribe(this._onSync);
 		return (await this.accountDB.requestSync(true)) || this.emptyAccountData();

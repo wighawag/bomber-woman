@@ -25,17 +25,17 @@ a:hover {
 /* buttons
 /* ------------------------------------------------- */
 button {
-	background: none;
-	color: inherit;
 	border: none;
-	padding: 0;
 	font: inherit;
 	cursor: pointer;
-	outline: inherit;
+	pointer-events: auto;
 }
 
 button,
 a[role='button'] {
+	background: var(--color-text-for-links);
+	color: var(--color-surface-500);
+
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -50,10 +50,21 @@ a[role='button'] {
 	font-weight: 600;
 	text-decoration-line: none;
 
-	height: 2rem;
+	height: fit-content;
+	padding: 0.5rem;
 	min-height: 2rem;
 	padding-inline: 0.75rem;
 	font-size: 0.875rem;
+}
+
+button:disabled,
+a[role='button']:disabled {
+	background-color: gray !important;
+}
+
+button.icon {
+	background: inherit;
+	color: inherit;
 }
 /* ------------------------------------------------- */
 
@@ -63,4 +74,25 @@ a[role='button'] {
 	html {
 		scroll-behavior: smooth;
 	}
+}
+
+.lucide {
+	min-width: 1em;
+	width: 1em;
+	height: 1em;
+	display: inline;
+	vertical-align: baseline;
+}
+
+@keyframes blink {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+:root {
+	--jsonBracketHoverBackground: var(--color-primary-500);
 }

@@ -1,5 +1,5 @@
 {
-  "name": "bomberman-onchain",
+  "name": "bomberWoman",
   "version": "0.0.1",
   "description": "Template to develop fully decentralised app and games",
   "private": true,
@@ -9,22 +9,30 @@
     "ldenv": "^0.3.9",
     "prettier": "^3.2.5",
     "syncpack": "^12.3.0",
-    "vitepress": "1.0.0-rc.45"
-  },
+    "vitepress": "1.0.0-rc.44",
+    "sharp": "^0.33.2"
+	},
+	"pnpm": {
+		"supportedArchitectures": {
+			"os": [
+				"linux"
+			],
+			"cpu": [
+				"x64"
+			]
+		}
+	},
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "---------------------- INSTALL ----------------------": "",
-    "boot": "npx change-name@0.3.1 --ask bomberman-onchain && pnpm i",
-    "set-name": "npx change-name@0.3.1 --ask bomberman-onchain",
-    "template-test": "pnpm --filter ./contracts local_node & pnpm run --filter ./contracts deploy localhost ~~ pnpm export -n localhost --ts ../indexer/src/contracts.ts,../web/src/data/contracts.ts ~~ && pnpm run --filter ./common build && pnpm --filter ./indexer build",
     "sync-deps": "syncpack fix-mismatches && pnpm -r format:fix",
     "update-deps": "pnpm update -r -i --latest && pnpm sync-deps",
     "---------------------- FORMAT ----------------------": "",
     "format": "prettier --write . && pnpm -r format",
     "format:check": "prettier --check . && pnpm -r format:check",
     "---------------------- INTERNAL ----------------------": "",
-    "_contracts:deploy:watch": "pnpm --filter ./contracts deploy:watch $MODE ~~ pnpm run export -n $MODE --ts ../indexer/src/contracts.ts,../web/src/data/contracts.ts ~~",
-    "_contracts:deploy": "pnpm run --filter ./contracts deploy $MODE  ~~ pnpm run export -n $MODE  --ts ../indexer/src/contracts.ts,../web/src/data/contracts.ts ~~",
+    "_contracts:deploy:watch": "pnpm --filter ./contracts deploy:watch $MODE ~~ pnpm run export -n $MODE --json ../helper-services/fuzd/contracts.json --ts ../indexer/src/contracts.ts,../web/src/data/contracts.ts ~~",
+    "_contracts:deploy": "pnpm run --filter ./contracts deploy $MODE  ~~ pnpm run export -n $MODE --json ../helper-services/fuzd/contracts.json --ts ../indexer/src/contracts.ts,../web/src/data/contracts.ts ~~",
     "---------------------- UTILITIES ----------------------": "",
     "local_node": "ldenv pnpm --filter ./contracts local_node",
     "contracts:compile": "pnpm --filter ./contracts compile",
@@ -32,12 +40,15 @@
     "web:dev": "pnpm --filter ./web dev",
     "indexer:dev": "pnpm --filter ./indexer dev",
     "common:dev": "pnpm --filter ./common dev",
-    "contracts:export": "ldenv -d localhost pnpm run --filter ./contracts export -n @@MODE --ts ../indexer/src/contracts.ts,../web/src/data/contracts.ts @@",
+    "contracts:export": "ldenv -d localhost pnpm run --filter ./contracts export -n @@MODE --json ../helper-services/fuzd/contracts.json --ts ../indexer/src/contracts.ts,../web/src/data/contracts.ts @@",
     "contracts:test": "pnpm --filter ./contracts test",
     "contracts:execute": "pnpm --filter ./contracts execute",
     "contracts:docs": "ldenv -d localhost pnpm run --filter ./contracts docgen @@MODE -o ../docs/contracts",
     "indexer:build": "ldenv pnpm run contracts:export @@MODE ~~ pnpm run --filter ./common build ~~ pnpm run --filter ./indexer build ~~ @@",
-    "indexer:index": "ldenv pnpm run indexer:build @@MODE ~~ pnpm --filter ./indexer index-to-file -n @@ETH_NODE_URI_:MODE,ETH_NODE_URI@:''@: -d src/contracts.ts -f ../web/static/indexed-state-@@MODE@:.json ~~ @@",
+    "indexer:index": "ldenv pnpm run indexer:build @@MODE ~~ pnpm --filter ./indexer index-to-file -n @@ETH_NODE_URI_:MODE,ETH_NODE_URI@:''@: -d src/contracts.ts -f ../web/static/indexed-states/@@MODE ~~ @@",
+    "fuzd:dev": "pnpm --filter ./helper-services/fuzd dev",
+    "sync:dev": "pnpm --filter ./helper-services/secp256k1-db dev",
+    "missiv:dev": "pnpm --filter ./helper-services/missiv dev",
     "---------------------- DOCS ----------------------": "",
     "docs:dev": "pnpm contracts:docs && vitepress dev docs",
     "docs:build": "pnpm contracts:docs && vitepress build docs",
@@ -45,7 +56,10 @@
     "---------------------- WEB USING EXISTING DEPLOYMENT ----------------------": "",
     "zellij-attach": "zellij --layout dev/zellij-attach.kdl a ${npm_package_name}-attach-$MODE || zellij --layout dev/zellij-attach.kdl -s ${npm_package_name}-attach-$MODE",
     "attach": "ldenv -d localhost pnpm run indexer:index @@MODE ~~ pnpm run zellij-attach ~~ @@",
-    "---------------------- FULL AGAINST AN EXISTING NETWORK ----------------------": "",
+    "---------------------- FULL AGAINST AN EXISTING NETWORK WITH LOCAL SERVICES ----------------------": "",
+    "zellij-remote-chain": "rm helper-services/fuzd/contracts.json && zellij --layout dev/zellij-remote-chain.kdl a ${npm_package_name}-remote-chain-$MODE || zellij --layout dev/zellij-remote-chain.kdl -s ${npm_package_name}-remote-chain-$MODE",
+    "remote-chain": "ldenv pnpm run zellij-remote-chain @@",
+    "---------------------- FULL AGAINST AN EXISTING NETWORK + SERVICES ----------------------": "",
     "zellij-remote": "zellij --layout dev/zellij-remote.kdl a ${npm_package_name}-remote-$MODE || zellij --layout dev/zellij-remote.kdl -s ${npm_package_name}-remote-$MODE",
     "remote": "ldenv pnpm run zellij-remote @@",
     "---------------------- DEPLOY ----------------------": "",
@@ -58,6 +72,7 @@
     "---------------------- RUN FULL LOCAL SETUP ----------------------": "",
     "start:wezterm": "wezterm --config-file dev/wezterm.lua start $PWD",
     "stop": "zellij kill-session $npm_package_name",
-    "start": "zellij --layout dev/zellij.kdl a $npm_package_name || zellij --layout dev/zellij.kdl -s $npm_package_name"
+    "start": "rm -Rf helper-services/fuzd/.wrangler && rm helper-services/fuzd/contracts.json && zellij --layout dev/zellij.kdl a $npm_package_name || zellij --layout dev/zellij.kdl -s $npm_package_name",
+    "clean:start": "rm -Rf contracts/deployments/localhost && pnpm start"
   }
 }

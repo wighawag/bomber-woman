@@ -1,75 +1,159 @@
-import {MergedAbis, JSProcessor, fromJSProcessor} from 'ethereum-indexer-js-processor';
+import type {MergedAbis, JSProcessor, EventWithArgs} from 'ethereum-indexer-js-processor';
+import {fromJSProcessor} from 'ethereum-indexer-js-processor';
 import contractsInfo from './contracts';
-import {Registry, type RegistryState} from 'bomberman-onchain-common';
+import {Color, ContractCell, BomberWomanContract, bigIntIDToXY} from 'bomber-woman-common';
 
-// We instantiate the registry (js-version)
-// This will take care of keeping track of changes to the state
-// The indexer role is thus just to feed the handler on events
-// We do it this way so we can reuse the registry in the frontend for other use case
-// predicting the outcome of updates for examples
-const registry = new Registry();
-
-const BombermanOnchainIndexerProcessor: JSProcessor<MergedAbis<typeof contractsInfo.contracts>, RegistryState> = {
-	// version is automatically populated via version.cjs to let the browser knows to reindex on changes
-	// this only work if the content of the generated file is changed, so if it import changed files, this won't be detected
-	version: '__VERSION_HASH__',
-
-	construct(): RegistryState {
-		return registry.initialState;
-	},
-
-	// The Processor can implement any of the event using `on<EventName>(state, event)` method
-	onMessageChanged(state, event) {
-		// we ensure the registry (js-version) is being given the new state
-		// this is important as we are dealing here with pure function and `state` could be a different instance each time
-		registry.handle(state);
-
-		// then the registry (js-version) is called to take care of updating the state
-		registry.setMessageFor(event.args.user, event.args.message, event.args.dayTimeInSeconds);
-	},
+export type CellPlacements = {
+	players: {color: Color; address: string}[];
 };
 
-export const createProcessor = fromJSProcessor(() => BombermanOnchainIndexerProcessor);
+export type SharedRatePerAccount = {
+	points: bigint;
+	totalRewardPerPointAccounted: bigint;
+	rewardsToWithdraw: bigint;
+};
 
-/*
-// The alternative to use an handler is to perform all the step right in that indexer file
-import {MergedAbis, JSProcessor, fromJSProcessor} from 'ethereum-indexer-js-processor';
-import contractsInfo from './contracts';
+export type FixedRatePerAccount = {
+	toWithdraw: bigint;
+	lastTime: number;
+};
 
-// you declare the types for your in-browswe DB.
+export type GlobalRate = {
+	lastUpdateTime: number;
+	totalRewardPerPointAtLastUpdate: bigint;
+	totalPoints: bigint;
+};
+
+export type EpochPlacements = {
+	epoch: number;
+	cells: {
+		[position: string]: CellPlacements;
+	};
+};
+
 export type Data = {
-	greetings: {account: `0x${string}`; message: string}[];
+	cells: {
+		[position: string]: ContractCell;
+	};
+	owners: {
+		[position: string]: `0x${string}`;
+	};
+	commitments: {
+		[address: string]: {epoch: number; hash: `0x${string}`};
+	};
+	placements: EpochPlacements[];
+	points: {
+		global: GlobalRate;
+		fixed: {
+			[address: string]: FixedRatePerAccount;
+		};
+		shared: {
+			[address: string]: SharedRatePerAccount;
+		};
+	};
 };
 
-const BombermanOnchainIndexerProcessor: JSProcessor<MergedAbis<typeof contractsInfo.contracts>, Data> = {
+type ContractsABI = MergedAbis<typeof contractsInfo.contracts>;
+
+const BomberWomanIndexerProcessor: JSProcessor<ContractsABI, Data> = {
 	// version is automatically populated via version.cjs to let the browser knows to reindex on changes
 	version: '__VERSION_HASH__',
-	
 	construct(): Data {
-		// you return here the starting state, here an empty array for the greetings
-		return {greetings: []};
+		return {
+			cells: {},
+			owners: {},
+			commitments: {},
+			placements: [],
+			points: {
+				global: {lastUpdateTime: 0, totalRewardPerPointAtLastUpdate: 0n, totalPoints: 0n},
+				fixed: {},
+				shared: {},
+			},
+		};
 	},
+	onCommitmentRevealed(state, event) {
+		const epoch = event.args.epoch;
+		const account = event.args.player.toLowerCase();
 
-	// The Processor can implement any of the event using `on<EventName>(state, event)` method
-	onMessageChanged(state, event) {
-		// we lookup existing message from this user:
-		const findIndex = state.greetings.findIndex((v) => v.account === event.args.user);
+		let epochEvents = state.placements.find((v) => v.epoch === event.args.epoch);
+		if (!epochEvents) {
+			epochEvents = {
+				epoch,
+				cells: {},
+			};
+		}
+		state.placements.unshift(epochEvents);
+		if (state.placements.length > 7) {
+			state.placements.pop();
+		}
 
-		// the message is one of the args of the event object (automatically populated and typed! from the abi)
-		const message = event.args.message;
+		const bomberWomanContract = new BomberWomanContract(state, 7);
+		for (const move of event.args.moves) {
+			bomberWomanContract.computeMove(event.args.player, event.args.epoch, move);
 
-		if (findIndex === -1) {
-			// if none message exists from that user we push a new entry
-			state.greetings.push({
-				account: event.args.user,
-				message: message,
+			let cell = epochEvents.cells[move.position.toString()];
+			if (!cell) {
+				epochEvents.cells[move.position.toString()] = cell = {
+					players: [],
+				};
+			}
+			cell.players.push({
+				color: move.color,
+				address: account,
 			});
-		} else {
-			// else we edit the message
-			state.greetings[findIndex].message = message;
+		}
+
+		// TODO only keep track of the connected player ?
+		delete state.commitments[account];
+	},
+	onSinglePoke(state, event) {
+		const bomberWomanContract = new BomberWomanContract(state, 7);
+		bomberWomanContract.poke(event.args.position, event.args.epoch);
+	},
+	onMultiPoke(state, event) {
+		const bomberWomanContract = new BomberWomanContract(state, 7);
+		for (const position of event.args.positions) {
+			// console.log({position: position, pos: bigIntIDToXY(position)});
+			bomberWomanContract.poke(position, event.args.epoch);
 		}
 	},
+	onCommitmentCancelled(state, event) {
+		const account = event.args.player.toLowerCase();
+		// TODO only keep track of the connected player ?
+		delete state.commitments[account];
+	},
+	onCommitmentMade(state, event) {
+		const account = event.args.player.toLowerCase();
+		// TODO only keep track of the connected player ?
+		state.commitments[account] = {epoch: event.args.epoch, hash: event.args.commitmentHash};
+	},
+	onCommitmentVoid(state, event) {
+		const account = event.args.player.toLowerCase();
+		// TODO only keep track of the connected player ?
+		delete state.commitments[account];
+	},
+	onReserveDeposited(state, event) {},
+	onReserveWithdrawn(state, event) {},
+	// onTimeIncreased(state, event) {},
+
+	// --------------------------
+
+	onForceSimpleCells(state, event) {
+		const bomberWomanContract = new BomberWomanContract(state, 7);
+		bomberWomanContract.forceSimpleCells(event.args.epoch, event.args.cells as any);
+	},
+
+	onAccounFixedRewardUpdated(state, event) {
+		state.points.fixed[event.args.account] = event.args.fixedRateStatus;
+	},
+
+	onAccountSharedRewardUpdated(state, event) {
+		state.points.shared[event.args.account] = event.args.sharedRateStatus;
+	},
+
+	onGlobalRewardUpdated(state, event) {
+		state.points.global = event.args.globalStatus;
+	},
 };
 
-export const createProcessor = fromJSProcessor(() => BombermanOnchainIndexerProcessor);
-*/
+export const createProcessor = fromJSProcessor(() => BomberWomanIndexerProcessor);

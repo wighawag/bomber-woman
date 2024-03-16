@@ -1,93 +1,89 @@
-<script>
-	import '../app.css';
-	import {name, description, themeColor, canonicalURL, appleStatusBarStyle, ENSName} from 'web-config';
-	import NewVersionNotification from '$lib/components/web/NewVersionNotification.svelte';
-	import NoInstallPrompt from '$lib/components/web/NoInstallPrompt.svelte';
-	import {url} from '$lib/utils/path';
+<script lang="ts">
+	import '../css/index.css';
+	import EraseNotice from '$lib/ui/components/EraseNotice.svelte';
+	import ClaimTokenScreen from '$lib/actions/claim/ClaimTokenScreen.svelte';
+	import WipNotice from '$lib/ui/components/WipNotice.svelte';
+	import Banners from '$utils/ui/banners/Banners.svelte';
+	import VersionAndInstallNotfications from '$lib/ui/install/VersionAndInstallNotfications.svelte';
+	import Modals from '$utils/ui/modals/Modals.svelte';
+	import {url} from '$utils/path';
+	import Web3ConnectionUI from '$lib/blockchain/connection/Web3ConnectionUI.svelte';
+	import Flow from '$lib/actions/flow/Flow.svelte';
 
-	import Install from '$lib/components/web/Install.svelte';
-	//TEMPLATE_REMOVE
-	import Footer from '$lib/structure/Footer.svelte';
-	//TEMPLATE_REMOVE
-	import Header from '$lib/structure/Header.svelte';
+	import {dev, initialContractsInfos, params} from '$lib/config';
+	import Head from './Head.svelte';
+	import Menu from '$lib/ui/menu/Menu.svelte';
+	import TransactionsView from '$lib/ui/transactions/TransactionsView.svelte';
+	import Admin from '$lib/ui/admin/Admin.svelte';
+	import CommitmentsView from '$lib/ui/commitments/CommitmentsView.svelte';
+	import IndexerView from '$lib/ui/indexer/IndexerView.svelte';
+	import ViewStateView from '$lib/ui/viewstate/ViewStateView.svelte';
+	import Welcome from '$lib/ui/tutorial/Welcome.svelte';
+	import SplashScreen from '$lib/ui/loading/SplashScreen.svelte';
+	import Debug from '$lib/ui/debug/Debug.svelte';
+	import EventsView from '$lib/ui/events/EventsView.svelte';
+	import RevealPhaseInformation from '$lib/ui/information/RevealPhaseInformation.svelte';
+	import Missiv from '$lib/ui/missiv/Missiv.svelte';
+	import LeaderboardView from '$lib/ui/leaderboard/LeaderboardView.svelte';
 
-	const host = canonicalURL.endsWith('/') ? canonicalURL : canonicalURL + '/';
-	const previewImage = host + 'preview.png';
+	$: showWIPNotice =
+		!dev &&
+		!params['force'] &&
+		(initialContractsInfos as any).name !== 'composablelabs' &&
+		(initialContractsInfos as any).name !== 'redstone-holesky' &&
+		(initialContractsInfos as any).name !== 'fast' &&
+		(initialContractsInfos as any).name !== 'sepolia' &&
+		(initialContractsInfos as any).name !== 'alpha1test';
 </script>
 
-<svelte:head>
-	<title>{name}</title>
-	<meta name="title" content={name} />
-	<meta name="description" content={description} />
-	{#if ENSName}<meta name="Dwebsite" content={ENSName} />
+<!-- add head, meta, sentry and other debug utilties-->
+<Head />
+<!-- -->
+
+<div style="position: absolute; z-index: 2; width: 100%; height: 100%; pointer-events: none;overflow: hidden;">
+	<ClaimTokenScreen name="BomberWoman" />
+
+	<Menu />
+
+	<EventsView />
+
+	<TransactionsView />
+
+	<CommitmentsView />
+
+	<LeaderboardView />
+
+	<IndexerView />
+
+	<ViewStateView />
+
+	<Missiv />
+
+	<Welcome />
+
+	<Admin />
+
+	<Debug />
+
+	<RevealPhaseInformation />
+
+	<Modals />
+
+	<Banners />
+
+	<VersionAndInstallNotfications src={url('/icon.png')} alt="BomberWoman" />
+
+	{#if showWIPNotice}
+		<WipNotice />
 	{/if}
 
-	<meta property="og:type" content="website" />
-	<meta property="og:url" content={host} />
-	<meta property="og:title" content={name} />
-	<meta property="og:description" content={description} />
-	<meta property="og:image" content={previewImage} />
-	<meta property="twitter:card" content="summary_large_image" />
-	<meta property="twitter:url" content={host} />
-	<meta property="twitter:title" content={name} />
-	<meta property="twitter:description" content={description} />
-	<meta property="twitter:image" content={previewImage} />
+	<EraseNotice />
 
-	<!-- minimal -->
-	<!-- use SVG, if need PNG, adapt accordingly -->
-	<!-- TODO automatise -->
-	<link rel="icon" href={url('/pwa/favicon.svg')} type="image/svg+xml" />
-	<link rel="icon" href={url('/pwa/favicon.ico')} sizes="any" /><!-- 32×32 -->
-	<link rel="apple-touch-icon" href={url('/pwa/apple-touch-icon.png')} /><!-- 180×180 -->
-	<link rel="manifest" href={url('/pwa/manifest.webmanifest')} />
+	<Web3ConnectionUI />
 
-	<!-- extra info -->
-	<meta name="theme-color" content={themeColor} />
-	<meta name="mobile-web-app-capable" content="yes" />
-	<meta name="application-name" content={name} />
+	<Flow />
 
-	<!-- apple -->
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="apple-mobile-web-app-status-bar-style" content={appleStatusBarStyle} />
-	<meta name="apple-mobile-web-app-title" content={name} />
-</svelte:head>
-
-<div class="page">
-	<Header />
-
-	<slot />
-
-	<!--TEMPLATE_REMOVE-->
-	<!-- We use rootClass as a way to inject styling in the component -->
-	<!-- not recommended except for css properties that should not be managed by children (positionoing, etc..) -->
-	<Footer rootClass="footer" />
-	<!--TEMPLATE_REMOVE-->
+	<SplashScreen />
 </div>
 
-<!-- Disable native prompt from browsers -->
-<NoInstallPrompt />
-<!-- You can also add your own Install Prompt: -->
-<!-- <Install src={url('/icon.svg')} alt="Bomberman Onchain" /> -->
-
-<!-- Here is Notification for new version -->
-<NewVersionNotification src={url('/icon.svg')} alt="Bomberman Onchain" />
-
-<style>
-	/* We wrap our app in this div */
-	/* So we can move the footer to the bottom (see margin-top:auto) */
-	/* This use flex flex-direction column to put each element vertically 
-		And use min-height to ensure all speace is taken */
-	/* This assumes html, body and any other anecsotr of .wrapper have height:100% */
-	.page {
-		display: flex;
-		flex-direction: column;
-		min-height: 100%;
-	}
-
-	/* This target the inner Footer element thanks to rootClass */
-	/* Svelte has no way to parametrize non-global class due to its strong encapsulation
-	/* But with css we often need to alter child position from parents */
-	.page :global(.footer) {
-		margin-top: auto;
-	}
-</style>
+<slot />

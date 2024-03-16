@@ -1,29 +1,55 @@
 import {readable} from 'svelte/store';
 import {version} from '$app/environment';
+import {dev as devEnvironment} from '$app/environment';
 
-import {getParamsFromLocation, getHashParamsFromLocation} from '$lib/utils/url';
+import {getParamsFromLocation, getHashParamsFromLocation} from '$utils/url';
 import {
 	PUBLIC_ETH_NODE_URI_LOCALHOST,
 	PUBLIC_ETH_NODE_URI,
 	PUBLIC_LOCALHOST_BLOCK_TIME,
 	PUBLIC_DEV_NODE_URI,
 	PUBLIC_SYNC_URI,
+	PUBLIC_FUZD_URI,
+	PUBLIC_SNAPSHOT_URI,
+	PUBLIC_MISSIV_URI,
 } from '$env/static/public';
+import {initialContractsInfos, contractsInfos} from './blockchain/networks';
 
-import _contractsInfos from '$data/contracts';
-export type NetworkConfig = typeof _contractsInfos;
-
-export const initialContractsInfos = _contractsInfos;
-
-export const globalQueryParams = ['debug', 'log', 'ethnode', '_d_eruda'];
+export const globalQueryParams = [
+	'debug',
+	'log',
+	'ethnode',
+	'_d_eruda',
+	'dev',
+	'ethnode',
+	'sync',
+	'fuzd',
+	'snapshot',
+	'debugTools',
+	'missiv',
+];
 
 export const hashParams = getHashParamsFromLocation();
 export const {params} = getParamsFromLocation();
 
+export const dev = 'dev' in params ? params['dev'] === 'true' : devEnvironment;
+
+export const debugTools = 'debugTools' in params ? params['debugTools'] === 'true' : false;
+
+function noEndSlash(str: string) {
+	if (str.endsWith('/')) {
+		return str.slice(0, -1);
+	}
+	return str;
+}
+
+const snapshotURI = params['snapshot'] || PUBLIC_SNAPSHOT_URI;
+export const remoteIndexedState = snapshotURI ? `${noEndSlash(snapshotURI)}/${initialContractsInfos.name}/` : undefined;
+
 const contractsChainId = initialContractsInfos.chainId as string;
 let defaultRPCURL: string | undefined = params['ethnode'];
 
-let blockTime: number | undefined = undefined;
+let blockTime: number = 15;
 
 let isUsingLocalDevNetwork = false;
 if (contractsChainId === '1337' || contractsChainId === '31337') {
@@ -34,7 +60,7 @@ if (contractsChainId === '1337' || contractsChainId === '31337') {
 			defaultRPCURL = url;
 		}
 	}
-	blockTime = PUBLIC_LOCALHOST_BLOCK_TIME ? parseInt(PUBLIC_LOCALHOST_BLOCK_TIME) : undefined;
+	blockTime = PUBLIC_LOCALHOST_BLOCK_TIME ? parseInt(PUBLIC_LOCALHOST_BLOCK_TIME) : blockTime;
 }
 if (!defaultRPCURL) {
 	const url = PUBLIC_ETH_NODE_URI as string;
@@ -48,32 +74,36 @@ const localRPC =
 
 const defaultRPC = defaultRPCURL ? {chainId: contractsChainId, url: defaultRPCURL} : undefined;
 
-// This allow to debug what is written to local storage
-// Disable this if the data should remains private
-export const doNotEncryptLocally = true;
+const SYNC_URI = params['sync'] || PUBLIC_SYNC_URI; //  'http://invalid.io'; // to emulate connection loss :)
+const SYNC_DB_NAME =
+	'bomber-woman-' + initialContractsInfos.chainId + '-' + initialContractsInfos.contracts.BomberWoman.address;
 
-const syncInfo = PUBLIC_SYNC_URI
+const FUZD_URI = noEndSlash(params['fuzd'] ? (params['fuzd'] == 'false' ? '' : params['fuzd']) : PUBLIC_FUZD_URI);
+
+const MISSIV_URI = noEndSlash(
+	params['missiv'] ? (params['missiv'] == 'false' ? '' : params['missiv']) : PUBLIC_MISSIV_URI,
+);
+
+const syncInfo = SYNC_URI
 	? {
-			uri: PUBLIC_SYNC_URI,
-	  }
+			uri: SYNC_URI,
+		}
 	: undefined;
 
-export {defaultRPC, isUsingLocalDevNetwork, localRPC, blockTime, syncInfo};
+const blockchainExplorer = (initialContractsInfos.chainInfo as any).blockExplorers?.default.url;
 
-let _setContractsInfos: any;
-export const contractsInfos = readable<NetworkConfig>(_contractsInfos, (set) => {
-	_setContractsInfos = set;
-});
-
-export function _asNewModule(set: any) {
-	_setContractsInfos = set;
-}
-
-if (import.meta.hot) {
-	import.meta.hot.accept((newModule) => {
-		newModule?._asNewModule(_setContractsInfos);
-		_setContractsInfos(newModule?.initialContractsInfos);
-	});
-}
+export {
+	initialContractsInfos,
+	contractsInfos,
+	defaultRPC,
+	isUsingLocalDevNetwork,
+	localRPC,
+	blockTime,
+	SYNC_DB_NAME,
+	syncInfo,
+	FUZD_URI,
+	MISSIV_URI,
+	blockchainExplorer,
+};
 
 console.log(`VERSION: ${version}`);

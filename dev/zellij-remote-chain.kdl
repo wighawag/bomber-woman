@@ -1,0 +1,36 @@
+layout {
+	pane {
+		pane {}
+		pane split_direction="vertical" {
+			pane name="COMPILE" command="bash"  {
+				args "-c" "pnpm contracts:compile:watch; cd contracts; ${SHELL-bash}"
+			}
+			pane name="DEPLOY" command="bash"  {
+				args "-c" "pnpm contracts:deploy:watch ${MODE}; cd contracts; ${SHELL-bash}"
+			}
+		}
+		pane split_direction="vertical" {
+			pane name="INDEXER" command="bash"  {
+				args "-c" "pnpm indexer:dev; cd indexer; ${SHELL-bash}"
+			}
+			pane name="COMMON" command="bash"  {
+				args "-c" "pnpm common:dev; cd common; ${SHELL-bash}"
+			}
+			pane name="WEB" command="bash"  {
+				args "-c" "pnpm web:dev; cd web; ${SHELL-bash}"
+			}
+		}
+		pane name="helper-services"  split_direction="vertical" {
+			pane name="FUZD"  command="bash"  {
+				args "-c" "pnpm fuzd:dev; cd helper-services/fuzd; ${SHELL-bash}"
+			}
+			pane name="SYNC"  command="bash"  {
+				args "-c" "pnpm sync:dev; cd helper-services/secp256k1-db; ${SHELL-bash}"
+			}
+			pane name="MISSIV"  command="bash"  {
+				args "-c" "pnpm missiv:dev; cd helper-services/missiv; ${SHELL-bash}"
+			}
+		}
+	}
+
+}
