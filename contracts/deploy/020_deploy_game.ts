@@ -22,12 +22,7 @@ export default execute(
 
 		const startTime = 0; // BigInt(Math.floor(Date.now() / 1000)); // startTime: nextSunday(),
 
-		const generator = get<typeof artifacts.RewardsGenerator.abi>('GemsGenerator');
-		const testTokens = get<typeof artifacts.TestTokens.abi>('TestTokens');
-
-		let decimals = await env.read(testTokens, {functionName: 'decimals'});
-		let symbol = await env.read(testTokens, {functionName: 'symbol'});
-		let name = await env.read(testTokens, {functionName: 'name'});
+		const generator = get<typeof artifacts.RewardsGenerator.abi>('BombsGenerator');
 
 		const admin = accounts.deployer;
 
@@ -99,34 +94,34 @@ export default execute(
 			});
 		}
 
-		const globalApproval = await env.read(testTokens, {
-			functionName: 'globalApprovals',
-			args: [BomberWoman.address],
-		});
+		// const globalApproval = await env.read(testTokens, {
+		// 	functionName: 'globalApprovals',
+		// 	args: [BomberWoman.address],
+		// });
 
-		if (!globalApproval) {
-			await env.execute(testTokens, {
-				account: deployer,
-				functionName: 'authorizeGlobalApprovals',
-				args: [[BomberWoman.address], true],
-			});
-		}
+		// if (!globalApproval) {
+		// 	await env.execute(testTokens, {
+		// 		account: deployer,
+		// 		functionName: 'authorizeGlobalApprovals',
+		// 		args: [[BomberWoman.address], true],
+		// 	});
+		// }
 
-		const addressesToAuthorize = Object.values(env.accounts).concat([BomberWoman.address]);
-		const anyNotAuthorized = await env.read(testTokens, {
-			functionName: 'anyNotAuthorized',
-			args: [addressesToAuthorize],
-		});
-		if (anyNotAuthorized) {
-			await env.execute(testTokens, {
-				account: deployer,
-				functionName: 'enableRequireAuthorization',
-				args: [addressesToAuthorize],
-			});
-		}
+		// const addressesToAuthorize = Object.values(env.accounts).concat([BomberWoman.address]);
+		// const anyNotAuthorized = await env.read(testTokens, {
+		// 	functionName: 'anyNotAuthorized',
+		// 	args: [addressesToAuthorize],
+		// });
+		// if (anyNotAuthorized) {
+		// 	await env.execute(testTokens, {
+		// 		account: deployer,
+		// 		functionName: 'enableRequireAuthorization',
+		// 		args: [addressesToAuthorize],
+		// 	});
+		// }
 	},
 	{
 		tags: ['BomberWoman', 'BomberWoman_deploy'],
-		dependencies: ['TestTokens_deploy', 'Gems_deploy'],
+		dependencies: ['Bombs_deploy'],
 	},
 );

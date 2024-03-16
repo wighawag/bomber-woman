@@ -9,26 +9,26 @@ export default execute(
 	async ({deployViaProxy, accounts, artifacts, get, getOrNull, execute, showMessage}) => {
 		const {deployer, tokensBeneficiary} = accounts;
 
-		const Gems = await get<typeof artifacts.Gems.abi>('Gems');
-		const GemsGenerator = await getOrNull<typeof artifacts.RewardsGenerator.abi>('GemsGenerator');
-		if (GemsGenerator) {
+		const Bombs = await get<typeof artifacts.Bombs.abi>('Bombs');
+		const BombsGenerator = await getOrNull<typeof artifacts.RewardsGenerator.abi>('BombsGenerator');
+		if (BombsGenerator) {
 			// we call `update` to ensure the distribution so far is using the previous rate
 			// This  and the upgrade can be done during the commit phase without running the risk
 			//   of using wrong values as no changes in points are possible during that phase
 			showMessage(`updating distribution before upgrade`);
-			await execute(GemsGenerator, {
+			await execute(BombsGenerator, {
 				functionName: 'update',
 				account: deployer,
 			});
 		}
 
 		await deployViaProxy(
-			'GemsGenerator',
+			'BombsGenerator',
 			{
 				account: deployer,
 				artifact: artifacts.RewardsGenerator,
 				args: [
-					zeroAddress, // Gems.address,
+					zeroAddress, // Bombs.address,
 					{
 						rewardRateMillionth: 0n, // TODO 100n, // 100 for every million of second. or 8.64 / day
 						// in play test we add reward midway
@@ -43,5 +43,5 @@ export default execute(
 			},
 		);
 	},
-	{tags: ['GemsGenerator', 'GemsGenerator_deploy'], dependencies: ['Gems_deploy']},
+	{tags: ['BombsGenerator', 'BombsGenerator_deploy'], dependencies: ['Bombs_deploy']},
 );

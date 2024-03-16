@@ -15,15 +15,15 @@ async function main() {
 		context,
 	);
 
-	const GemsGenerator = env.deployments.GemsGenerator as Deployment<typeof context.artifacts.RewardsGenerator.abi>;
-	const value = await env.read(GemsGenerator, {
+	const BombsGenerator = env.deployments.BombsGenerator as Deployment<typeof context.artifacts.RewardsGenerator.abi>;
+	const value = await env.read(BombsGenerator, {
 		functionName: 'earnedFromPoolRateMultipleAccounts',
 		args: [args],
 	});
 
 	console.log(value);
 
-	const global = await env.read(GemsGenerator, {
+	const global = await env.read(BombsGenerator, {
 		functionName: 'global',
 	});
 

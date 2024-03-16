@@ -1,7 +1,7 @@
 ---
 outline: deep
 ---
-# GemsGenerator
+# BombsGenerator
 
 
 

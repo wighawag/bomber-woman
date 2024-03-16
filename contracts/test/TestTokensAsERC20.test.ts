@@ -10,7 +10,7 @@ type Fixture = {
 	userWithToken: string;
 };
 
-async function setupGems(): Promise<Fixture> {
+async function setupBombs(): Promise<Fixture> {
 	const setup = await loadFixture(deployBomberWomanWithTestConfig);
 	return {
 		ethereum: setup.provider,
@@ -20,7 +20,7 @@ async function setupGems(): Promise<Fixture> {
 	};
 }
 
-const tests = erc20.generateTests({EIP717: true}, setupGems);
+const tests = erc20.generateTests({EIP717: true}, setupBombs);
 
 describe('TestTokens as ERC20', function () {
 	runtests(tests, {describe, it});

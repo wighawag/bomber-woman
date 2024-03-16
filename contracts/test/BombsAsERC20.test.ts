@@ -10,18 +10,18 @@ type Fixture = {
 	userWithToken: string;
 };
 
-async function setupGems(): Promise<Fixture> {
+async function setupBombs(): Promise<Fixture> {
 	const setup = await loadFixture(deployBomberWomanWithTestConfig);
 	return {
 		ethereum: setup.provider,
-		contractAddress: setup.Gems.address,
+		contractAddress: setup.Bombs.address,
 		users: setup.otherAccounts,
 		userWithToken: setup.tokensBeneficiary,
 	};
 }
 
-const tests = erc20.generateTests({EIP717: true}, setupGems);
+const tests = erc20.generateTests({EIP717: true}, setupBombs);
 
-describe('Gems as ERC20', function () {
+describe('Bombs as ERC20', function () {
 	runtests(tests, {describe, it});
 });

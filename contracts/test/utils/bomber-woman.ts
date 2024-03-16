@@ -22,7 +22,7 @@ import {EIP1193ProviderWithoutEvents} from 'eip-1193';
 export type GridEnv = {
 	BomberWoman: ContractWithViemClient<typeof artifacts.IBomberWomanWithDebug.abi>;
 	TestTokens: ContractWithViemClient<typeof artifacts.TestTokens.abi>;
-	GemsGenerator: ContractWithViemClient<typeof artifacts.RewardsGenerator.abi>;
+	BombsGenerator: ContractWithViemClient<typeof artifacts.RewardsGenerator.abi>;
 	Time: ContractWithViemClient<typeof solidityKitArtifacts.Time.abi>;
 	otherAccounts: `0x${string}`[];
 	bomberWomanAdmin: `0x${string}`;
@@ -35,7 +35,7 @@ export type GridEnv = {
 		commitPhaseDuration: bigint;
 		revealPhaseDuration: bigint;
 		maxLife: number;
-		numTokensPerGems: bigint;
+		numTokensPerBombs: bigint;
 	};
 	provider: EIP1193ProviderWithoutEvents;
 };

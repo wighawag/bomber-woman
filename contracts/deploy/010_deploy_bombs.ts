@@ -7,11 +7,11 @@ export default execute(
 	context,
 	async ({deploy, accounts, artifacts}) => {
 		const {deployer, tokensBeneficiary} = accounts;
-		await deploy('Gems', {
+		await deploy('Bombs', {
 			account: deployer,
-			artifact: artifacts.Gems,
+			artifact: artifacts.Bombs,
 			args: [deployer, tokensBeneficiary, parseEther('1000')], // 18 decimal like ether
 		});
 	},
-	{tags: ['Gems', 'Gems_deploy']},
+	{tags: ['Bombs', 'Bombs_deploy']},
 );

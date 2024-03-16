@@ -160,7 +160,7 @@ export async function expectWallet(env: GridEnv, expectedWalletsAfter: {[playerI
 		const expectedAmount: WalletBalance = expectedWalletsAfter[playerIndex];
 		expect(stakingTokenAmount, `player ${playerIndex} (${player}) staking token`).to.equal(expectedAmount.stakingToken);
 		if (expectedAmount.points) {
-			const pointsTokenAmount = await env.GemsGenerator.read.balanceOf([player]);
+			const pointsTokenAmount = await env.BombsGenerator.read.balanceOf([player]);
 			expect(pointsTokenAmount, `player ${playerIndex} (${player}) points`).to.equal(expectedAmount.points);
 		}
 	}
@@ -180,9 +180,9 @@ async function deployBomberWoman(override?: Partial<GameConfig>) {
 	);
 
 	const TestTokens = await fetchContract(deployments['TestTokens'] as Deployment<typeof artifacts.TestTokens.abi>);
-	const Gems = await fetchContract(deployments['Gems'] as Deployment<typeof artifacts.Gems.abi>);
-	const GemsGenerator = await fetchContract(
-		deployments['GemsGenerator'] as Deployment<typeof artifacts.RewardsGenerator.abi>,
+	const Bombs = await fetchContract(deployments['Bombs'] as Deployment<typeof artifacts.Bombs.abi>);
+	const BombsGenerator = await fetchContract(
+		deployments['BombsGenerator'] as Deployment<typeof artifacts.RewardsGenerator.abi>,
 	);
 	const BomberWoman = await fetchContract(
 		deployments['BomberWoman'] as Deployment<typeof artifacts.IBomberWomanWithDebug.abi>,
@@ -203,9 +203,9 @@ async function deployBomberWoman(override?: Partial<GameConfig>) {
 		config,
 		otherAccounts,
 		provider: provider as any,
-		Gems,
+		Bombs,
 		Time,
-		GemsGenerator,
+		BombsGenerator,
 	};
 }
 
@@ -233,5 +233,7 @@ export async function pokeAll(env: GridEnv, resultGrid: string, epoch: number) {
 
 	const {accounts, walletClient, publicClient} = await getConnection();
 	const [deployer] = accounts;
-	await env.BomberWoman.write.pokeMultiple([Object.keys(state.$state.cells).map((v) => BigInt(v))], {account: deployer});
+	await env.BomberWoman.write.pokeMultiple([Object.keys(state.$state.cells).map((v) => BigInt(v))], {
+		account: deployer,
+	});
 }

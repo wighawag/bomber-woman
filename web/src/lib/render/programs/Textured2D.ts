@@ -2,23 +2,8 @@ import * as twgl from 'twgl.js';
 import * as m3 from '$utils/m3';
 import type {CameraState} from '../camera';
 import type {BomberWomanViewState} from '$lib/state/ViewState';
-import {
-	drawCastle,
-	drawCorners,
-	drawGrassCenter,
-	drawHouse,
-	sheetURL,
-	type Attributes,
-	drawSandCenter,
-	drawHouseInFire,
-	drawTent,
-	drawGem,
-	drawUnit,
-	drawFire,
-} from '../tiles';
-import {epoch} from '$lib/state/Epoch';
-import {get} from 'svelte/store';
-import {bigIntIDToXYID, xyToBigIntID} from 'bomber-woman-common';
+import {sheetURL, type Attributes} from '../textures';
+import {bigIntIDToXY} from 'bomber-woman-common';
 
 const vertexShaderSource = `#version 300 es
 
@@ -113,75 +98,10 @@ export class Textured2DLayer {
 			texs: [],
 			alphas: [],
 		};
-		for (let cellPos of Object.keys(state.cells)) {
-			const cell = state.viewCells[cellPos];
-			const [x, y] = cellPos.split(',').map((v) => parseInt(v));
-			const oldCell = state.rawState.cells[xyToBigIntID(x, y).toString()];
-			const neighbors = {
-				N: !!state.cells[`${x},${y - 1}`],
-				NE: !!state.cells[`${x + 1},${y - 1}`],
-				E: !!state.cells[`${x + 1},${y}`],
-				SE: !!state.cells[`${x + 1},${y + 1}`],
-				S: !!state.cells[`${x},${y + 1}`],
-				SW: !!state.cells[`${x - 1},${y + 1}`],
-				W: !!state.cells[`${x - 1},${y}`],
-				NW: !!state.cells[`${x - 1},${y - 1}`],
-			};
-			drawCorners(attributes, this.size, offset, neighbors, tileSize, x, y, 1);
-			if (
-				(oldCell && cell.next.color != oldCell?.color) ||
-				cell.next.epochWhenTokenIsAdded >= get(epoch) /* TODO access to epcoh*/
-			) {
-				drawSandCenter(attributes, this.size, offset, tileSize, numTiles, x, y, 1);
-			} else {
-				drawGrassCenter(attributes, this.size, offset, tileSize, numTiles, x, y, 1);
-			}
-		}
-
-		for (let cellPos of Object.keys(state.cells)) {
-			const cell = state.viewCells[cellPos];
-			const contractCell = state.cells[cellPos];
-			const [x, y] = cellPos.split(',').map((v) => parseInt(v));
-
-			drawCastle(attributes, this.size, tileSize, x, y, cell.next.color, 1);
-
-			for (let i = 0; i < cell.next.life; i++) {
-				drawHouse(attributes, this.size, tileSize, x, y, cell.next.color, 1, i);
-			}
-
-			if (cell.next.life > 0) {
-				drawGem(attributes, this.size, tileSize, x, y, cell.next.color, 1);
-				if (contractCell.stake > 1) {
-					for (let i = 1; i < contractCell.stake; i++) {
-						drawGem(attributes, this.size, tileSize, x + 0.05 * i, y - 0.05 * i, cell.next.color, 1);
-					}
-				}
-			}
-
-			if (cell.future.life > cell.next.life) {
-				for (let i = cell.next.life; i < cell.future.life; i++) {
-					drawTent(attributes, this.size, tileSize, x, y, cell.next.color, 1, i);
-				}
-			} else if (cell.future.life < cell.next.life) {
-				for (let i = Math.max(0, cell.next.life - (cell.next.life - cell.future.life)); i < cell.next.life; i++) {
-					const offset = 0.2 * tileSize;
-					const margin = 0.3 * tileSize;
-					drawHouseInFire(attributes, this.size, tileSize, x, y, cell.next.color, 1, i);
-				}
-			}
-
-			if ((cell.next.enemyMap & 1) == 1) {
-				drawUnit(attributes, this.size, tileSize, x, y, cell.next.color, 1, 0, -1);
-			}
-			if ((cell.next.enemyMap & 2) == 2) {
-				drawUnit(attributes, this.size, tileSize, x, y, cell.next.color, 1, -1, 0);
-			}
-			if ((cell.next.enemyMap & 4) == 4) {
-				drawUnit(attributes, this.size, tileSize, x, y, cell.next.color, 1, 0, 1);
-			}
-			if ((cell.next.enemyMap & 8) == 8) {
-				drawUnit(attributes, this.size, tileSize, x, y, cell.next.color, 1, 1, 0);
-			}
+		for (let avatarID of Object.keys(state.avatars)) {
+			const avatar = state.avatars[avatarID];
+			const {x, y} = bigIntIDToXY(avatar.position);
+			drawAvatar(attributes, this.size, tileSize, x, y);
 		}
 
 		// we update the buffer with the new arrays
