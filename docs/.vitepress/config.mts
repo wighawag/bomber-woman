@@ -21,19 +21,24 @@ const contracts = contractNames
 
 const isRunningOnVercel = !!process.env.VERCEL;
 
+const description = 'Bomber Woman is a fun simultaneous turn based game where player attempt to bomb each other';
+const title = 'Bomber Woman';
+const host = `https://bomber-woman.world`;
+const preview = `${host}/preview.png`;
+
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-	base: isRunningOnVercel ? '/' : '/bomberWoman/',
-	title: 'BomberWoman',
-	description: 'BomberWoman an Autonomous World being created by players',
+	base: isRunningOnVercel ? '/' : '/bomber-woman/',
+	title,
+	description,
 	head: [
     [
 			'script',
 			{id: 'plausible'},
 			`;(() => {
-        if (location.hostname === 'bomberWoman.world') {
+        if (location.hostname === '${host}') {
           const plausible_script = document.createElement('script');
-          plausible_script.setAttribute('data-domain','bomberWoman.world');
+          plausible_script.setAttribute('data-domain','${host}');
           plausible_script.setAttribute('data-api','/stats/api/event');
           plausible_script.setAttribute('src','/stats/js/script.js');
           document.head.appendChild(plausible_script);
@@ -44,7 +49,7 @@ export default defineConfig({
 		// 	'script',
 		// 	{
 		// 		defer: '',
-		// 		'data-domain': 'bomberWoman.world',
+		// 		'data-domain': 'bomber-woman.world',
 		// 		src: '/stats/js/script.js',
 		// 		'data-api': '/stats/api/event',
 		// 	},
@@ -52,25 +57,19 @@ export default defineConfig({
 		['link', {rel: 'icon', href: '/icon.png'}],
 		['meta', {name: 'theme-color', content: '#9F5FED'}],
 
-		['meta', {name: 'og:url', content: 'https://bomberWoman.world'}],
-		['meta', {name: 'og:title', content: 'BomberWoman'}],
-		['meta', {name: 'og:description', content: 'BomberWoman an Autonomous World being created by players'}],
+		['meta', {name: 'og:url', content: host}],
+		['meta', {name: 'og:title', content: title}],
+		['meta', {name: 'og:description', content: description}],
 		['meta', {name: 'og:type', content: 'website'}],
 		['meta', {name: 'og:locale', content: 'en'}],
-		['meta', {name: 'og:site_name', content: 'BomberWoman'}],
-		['meta', {name: 'og:image', content: 'https://bomberWoman.world/preview.png'}],
+		['meta', {name: 'og:site_name', content: title}],
+		['meta', {name: 'og:image', content: preview}],
 
-		['meta', {name: 'twitter:url', content: 'https://bomberWoman.world'}],
-		['meta', {name: 'twitter:title', content: 'BomberWoman'}],
-		['meta', {name: 'twitter:description', content: 'BomberWoman an Autonomous World being created by players'}],
+		['meta', {name: 'twitter:url', content: host}],
+		['meta', {name: 'twitter:title', content: title}],
+		['meta', {name: 'twitter:description', content: description}],
 		['meta', {name: 'twitter:card', content: 'summary_large_image'}],
-		[
-			'meta',
-			{
-				name: 'twitter:image',
-				content: 'https://bomberWoman.world/preview.png',
-			},
-		],
+		['meta',{name: 'twitter:image', content: preview}],
 	],
 	themeConfig: {
 		logo: '/logo.png',
@@ -78,7 +77,6 @@ export default defineConfig({
 		nav: [
 			{text: 'Home', link: '/'},
 			{text: 'Getting Started', link: '/guide/getting-started/'},
-			{text: 'Extend', link: `/guide/extending-the-world/`},
 			{text: 'Contracts', link: `/contracts/${firstContractName}/`},
 		],
 
@@ -87,15 +85,14 @@ export default defineConfig({
 				text: 'Documentation',
 				items: [
 					{text: 'Getting Started', link: '/guide/getting-started/'},
-					{text: 'Extending The World', link: `/guide/extending-the-world/`},
 					{text: 'Contracts', items: contracts},
 				],
 			},
 		],
 
 		socialLinks: [
-			{icon: 'github', link: 'https://github.com/wighawag/bomberWoman#readme'},
-			{icon: 'twitter', link: 'https://twitter.com/bomberWoman_eth'},
+			{icon: 'github', link: 'https://github.com/wighawag/bomber-woman#readme'},
+			{icon: 'twitter', link: 'https://twitter.com/wighawag'},
 			{icon: 'discord', link: 'https://discord.gg/Qb4gr2ekfr'},
 		],
 
@@ -112,9 +109,7 @@ export default defineConfig({
 		'contracts/:pkg.md': 'contracts/:pkg/index.md',
 	},
 	transformHead: ({pageData}) => {
-
-		const host = "https://bomberWoman.world";
-
+		
 		const head: HeadConfig[] = []
 
 		if (pageData.frontmatter.title) {

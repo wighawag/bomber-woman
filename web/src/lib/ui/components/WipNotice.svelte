@@ -11,9 +11,9 @@
 			<h3>Moved</h3>
 			<p>
 				This play-test has been discountinued. Join our first alpha on base at <a
-					href="https://alpha1.bomberWoman.world"
+					href="https://alpha1.bomber-woman.world"
 					rel="noopener noreferer"
-					class="underline">alpha1.bomberWoman.world</a
+					class="underline">alpha1.bomber-woman.world</a
 				>
 			</p>
 		{:else if date}

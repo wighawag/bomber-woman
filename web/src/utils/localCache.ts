@@ -12,7 +12,7 @@ class LocalCache {
 		if (this.version && typeof window !== 'undefined' && window.localStorage) {
 			if (
 				window.location &&
-				(window.location.host === 'base.bomberWoman.world' || window.location.host === 'localhost:5173') &&
+				(window.location.host === 'base.bomber-woman.world' || window.location.host === 'localhost:5173') &&
 				window.localStorage.length > 0
 			) {
 				// special case as we forgot to write to storage

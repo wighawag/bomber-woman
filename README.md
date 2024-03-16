@@ -1,74 +1,24 @@
 <p align="center">
-  <a href="https://bomberWoman.world">
-    <img src="docs/public/title.png" alt="BomberWoman Logo" width="500">
+  <a href="https://bomber-woman.world">
+    <img src="docs/public/icon.png" alt="Bomber Woman Logo" width="500">
   </a>
 </p>
 <p align="center">
-  <a href="https://twitter.com/bomberWoman_eth">
-    <img alt="Twitter" src="https://img.shields.io/badge/Twitter-1DA1F2?logo=twitter&logoColor=white" />
+  <a href="https://github.com/wighawag/bomber-woman">
+    <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/wighawag/bomber-woman">
   </a>
-  <a href="https://app.100.builders/directory">
-    <img src="https://img.shields.io/badge/Incubated_by-100.builders-9146ff?logo=gamejolt&logoColor=white&labelColor=464646"/>
+  <a href="https://github.com/wighawag/bomber-woman/blob/main/LICENSE">
+    <img alt="License" src="https://img.shields.io/github/license/wighawag/bomber-woman.svg">
   </a>
-  <a href="https://vote.artizen.fund/index/bomber-woman-1692882099974x277377607701889020">
-    <img src="https://img.shields.io/badge/Official_Selection-Artizen_Season_3-1acc6c?logo=image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2NCcgaGVpZ2h0PSc2NCcgZmlsbD0nI2ZmZicgdmlld0JveD0nMCAwIDE2MCAxMjgnPjxwYXRoIGQ9J00xNTkuODk2IDExOC45ODRDMTU5Ljg5NiAxMTYuODgxIDE1OC4wODggMTE1LjA3OCAxNTUuOTc5IDExNS4wNzhDMTQ0LjAyOCAxMTUuMDc4IDEzMi4xNzggMTEzLjU3NiAxMjEuMDMxIDEwOS43NzFDMTE1LjEwNiAxMDcuNzY5IDEwOS4yODEgMTA0Ljc2NSAxMDQuMzYgMTAwLjc1OUMxMTQuNzA0IDkxLjg0NzUgMTIzLjU0MSA4MS4zMzM1IDEyOS43NjggNjkuMTE3MkMxMzIuODgxIDYyLjkwOSAxMzUuMzkyIDU1Ljg5OTcgMTM0LjQ4OCA0OC43OTAyQzEzMy4wODIgMzguNDc2NSAxMjQuNTQ2IDMyLjQ2ODUgMTE0LjUwMyAzMS44Njc3Qzk4LjIzNCAzMC41NjYgODQuMDczOSAzOS45Nzg1IDc3LjE0NDQgNTQuMzk3N0M3My43Mjk5IDYxLjQwNyA3Mi4yMjM1IDY5LjMxNzUgNzIuNzI1NyA3Ny4xMjc5QzczLjEyNzQgODUuNjM5MiA3Ni4xNDAyIDkzLjY0OTkgODAuODYwMiAxMDAuNDU5QzY4LjcwODYgMTA4LjA2OSA1NC44NDk4IDExMi44NzUgNDAuNjg5NyAxMTIuOTc2QzM3LjE3NDcgMTEyLjk3NiAzMy41NTk0IDExMi43NzUgMzAuMTQ0OSAxMTIuMDc0QzI2LjkzMTIgMTExLjM3MyAyMy43MTc2IDExMC4wNzIgMjEuNDA3OCAxMDcuNzY5QzE2LjY4NzcgMTAyLjg2MiAxNy4zOTA3IDk1LjY1MjUgMTguOTk3NiA4OS4xNDM5QzIyLjkxNDIgNzUuMTI1MiAzMS43NTE3IDYyLjYwODYgNDEuNTkzNSA1MS44OTQzQzUxLjAzMzYgNDEuNzgwOSA2NC43OTIgMzAuNDY1OCA3OC45NTIxIDI2Ljk2MTJDODMuMzcwOSAyNS44NTk3IDg2LjU4NDUgMjIuMTU0OCA4Ny4yODc1IDE3LjY0ODhDODcuNDg4NCAxNS45NDY1IDg3LjY4OTIgMTQuMjQ0MiA4Ny42ODkyIDEyLjQ0MTlDODcuNjg5MiAxMC42Mzk1IDg3LjM4NzkgNy42MzU0NiA4Ny4wODY2IDUuNTMyNjZDODYuNDg0MSAyLjEyODEzIDgzLjM3MDkgLTAuMjc1MDY2IDc5Ljg1NTkgMC4wMjUzMzNDNzcuMDQ0IDAuMjI1NiA3NC4yMzIxIDAuNzI2MjY2IDcxLjUyMDYgMS40MjcyQzU0LjQ0ODEgNi4wMzMzMyA0MC4wODcxIDE4LjA0OTMgMjguNzM4OSAzMS4wNjY2QzE0LjM3NzkgNDcuNjg4NyAwLjgyMDM3MyA3MS4yMiAwLjAxNjk2MjMgOTMuNjQ5OUMtMC4zODQ3NDMgMTA4LjI2OSA2LjM0MzgyIDEyMC43ODYgMjAuNzA0OCAxMjUuNTkyQzI1LjcyNjEgMTI3LjI5NSAzMS4wNDg3IDEyNy44OTUgMzYuMjcwOSAxMjcuOTk2QzU1LjY1MzIgMTI4LjE5NiA3NC40MzI5IDEyMS41ODcgOTAuNTAxMSAxMTEuMTczQzkzLjgxNTIgMTEzLjk3NyA5Ny41MzEgMTE2LjM4IDEwMS40NDggMTE4LjI4M0MxMTcuMzE1IDEyNi4zOTMgMTM1LjM5MiAxMjcuOTk2IDE1Mi44NjYgMTI3Ljc5NUMxNTMuNzcgMTI3Ljc5NSAxNTQuODc0IDEyNy43OTUgMTU1Ljk3OSAxMjcuNzk1QzE1OC4xODkgMTI3Ljc5NSAxNjAuMDk3IDEyNS45OTMgMTU5Ljk5NiAxMjMuNzlWMTE4Ljk4NEgxNTkuODk2Wk05Mi4yMDg0IDgyLjEzNDZDODkuMzk2NSA2OS45MTgzIDk1LjYyMjkgNTUuMDk4NiAxMDguMTc2IDUxLjQ5MzhDMTEwLjI4NSA1MC44OTMgMTEyLjU5NSA1MC41OTI2IDExNC44MDQgNTAuNjkyN0MxMTUuMzA2IDUwLjY5MjcgMTE1LjgwOSA1MC43OTI5IDExNi4yMSA1MC44OTNDMTE2LjYxMiA1MC45OTMxIDExNi44MTMgNTEuMDkzMyAxMTcuMTE0IDUxLjM5MzdDMTE3LjgxNyA1Mi4wOTQ2IDExNy41MTYgNTMuNzk2OSAxMTcuNDE1IDU1LjA5ODZDMTE2LjkxMyA1OC41MDMxIDExNS41MDcgNjIuMzA4MiAxMTMuOCA2NS41MTI1QzEwOS4wOCA3NC4yMjQgMTAyLjU1MiA4Mi41MzUxIDk0LjkxOTkgODkuNTQ0NEM5My43MTQ4IDg3LjI0MTQgOTIuODExIDg0LjczOCA5Mi4yMDg0IDgyLjEzNDZaJy8+PC9zdmc+&labelColor=464646&style=for-the-badge)"/>
-  </a>
-  <a href="https://github.com/wighawag/bomberWoman">
-    <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/wighawag/bomberWoman">
-  </a>
-  <!-- <a href="https://github.com/wighawag/bomberWoman">
-  <img alt="Build" src="https://github.com/wighawag/bomberWoman/actions/workflows/build.yml/badge.svg">
-  </a> -->
-  <a href="https://github.com/wighawag/bomberWoman/blob/main/LICENSE">
-    <img alt="License" src="https://img.shields.io/github/license/wighawag/bomberWoman.svg">
-  </a>
-  <a href="https://github.com/wighawag/bomberWoman/issues">
-    <img alt="open issues" src="https://isitmaintained.com/badge/open/wighawag/bomberWoman.svg">
+  <a href="https://github.com/wighawag/bomber-woman/issues">
+    <img alt="open issues" src="https://isitmaintained.com/badge/open/wighawag/bomber-woman.svg">
   </a>
 </p>
 
 ---
 
-# 👾🌍 An Autonomous World In Constant Evolution
+# 👾🌍 BomberMan on-chain
 
-[BomberWoman](https://bomberWoman.world) is a game where players are actual gods. They are literaly the one creating the world and its inhabitants.
-
-BomberWoman is an [Autonomous World](https://0xparc.org/blog/autonomous-worlds) and is thus permission-less and persistent. Its rules are immutable yet it is fully composable and as a community players can bring new dimensions to the world all permissionlessly.
-
-We expand on that idea in our latest essay: ["Natural Compoability in Autonomous Worlds"](https://etherplay.io/blog/natural-composability/).
-
-## ♟️ What is bomberWoman exactly ?
-
-<img align="right" style="width:200px" src="docs/public/icon.png">
-BomberWoman is a world created by players and anyone can join at any time. Players use a specific set of factions to compete for control of the world. Alliances and betrayal are part of the arsenal as factions mixes around the world thus created.
-
-BomberWoman is thus first and foremost a social game. Its main inspiration is [Conquest.eth](https://conquest.game) who successfully created a deeply social game out of simple mechanics.
-
-BomberWoman explores this further by having even simpler rules. It also reduces the gas cost to a minimum by spreading the actions over a week. It works because most of the game plays out in the conversations and strategies happening among the players.
-
-While maximally on-chain, BomberWoman scales with players by offering compelling off-chain gameplay thanks to its associated social complexity.
-
-## 🎮 How do you play ?
-
-Players participate in the game by depositing ETH (ratio to be defined) to place a new piece of land on the endless sea. They specify its location and faction.
-
-By doing so, they risk the associated ETH but also get a chance to potentially capture the same (and more) from other players.
-
-More details coming soon! Follow our [twitter](https://twitter.com/bomberWoman_eth) or register your interest on our [website](https://bomberWoman.world)!
-
-<p align="center">
-  <a href="https://bomberWoman.world">
-    <img src="docs/public/bomber-woman-screenshot.png" alt="BomberWoman Screenshot" width="500">
-  </a>
-</p>
-
-## 🎎 Who we are?
-
-We are [Etherplay](https://etherplay.io), an Open Source Game Studio building Autonomous worlds.
-
-We have been building fully on-chain games since 2016-[2017](https://etherplay.io/blog/our-first-unstoppable-game-tug-of-war/) and what we consider to be Autonomous Worlds since [early 2019](https://github.com/wighawag/the_eternal_dungeon/commit/b283988cccf37c63c290b5bd5465bfe5bb3dc7ad) following in the footsteps of [Huntercoin](https://xaya.io/huntercoin-legacy). We started our adventure with the aptly named "[Ethernal](https://ethernal.land/)" and then launched the autonomous version of [Conquest.eth](https://conquest.game) in April 2022 which will remain live until [Gnosis](https://www.gnosis.io/), the chain it runs on, dies if ever (See our recent [announcement](https://etherplay.io/blog/conquest-is-open-source/)).
-
-Our founder, [Ronan Sandford](https://ronan.eth.limo) is also an active developer in the web3 space with contributions towards EIP like [ERC-1155](https://ercs.ethereum.org/ERCS/erc-1155) and [ERC-2771](https://ercs.ethereum.org/ERCS/erc-2771), but also tools like [hardhat-deploy](https://github.com/wighawag/hardhat-deploy) and [Jolly-Roger](https://jolly-roger.eth.limo). He has been tinkering with on-chain NFTs with [Mandalas](https://mandalas.eth.limo) and [Bleeps](https://bleeps.art). You can find more on his [personal website](https://ronan.eth.limo).
 
 ## 💻 Install
 
@@ -183,18 +133,3 @@ for etherscan if the network is not supported by default (no endpoint), you can 
 pnpm contracts:verify <network> etherscan --endpoint <api endpoint url>
 ```
 
-## 🙌🎉 How You Can Contribute
-
-If you're passionate about Autonomous Worlds and infinite games, or if you have your own ideas to bring to the table, we welcome your contributions!
-
-Here's how you can get involved:
-
-- **Submit a Pull Request:** If you see any potential improvement, go for it. We welcome any kind of contributions
-
-- **Reach out to us if you want to join the project**, We are especially looking for web dev (css experience), game dev and web/UX designer.
-
-- **Sponsor us** Any amounts are welcome. It will help us continue improving the game. All our work is open-source and any sponsor is thus for the public good :)
-
-- **Partner with us** Our game is unique in that you can put funds in it and promote your own project. There is even scope to bring your project's token in the game. Reach out to us if you want to know more
-
-**Join us on this exciting journey of innovation and creativity. Let's have fun!** 🎮👾🚀

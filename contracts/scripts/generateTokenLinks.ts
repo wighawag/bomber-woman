@@ -48,7 +48,7 @@ async function main() {
 	fs.writeFileSync(
 		`.keys/${env.network.name}-list.csv`,
 		contentLines
-			.concat(accounts.map((v) => `${v.address},https://${env.network.name}.bomberWoman.world#tokenClaim=${v.key}`))
+			.concat(accounts.map((v) => `${v.address},https://${env.network.name}.bomber-woman.world#tokenClaim=${v.key}`))
 			.join('\n'),
 	);
 

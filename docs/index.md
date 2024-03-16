@@ -4,13 +4,13 @@ layout: home
 
 hero:
   # name: "BomberWoman"
-  text: 'The Genesis of a New World'
-  tagline: 'BomberWoman is an independent universe forever running where players, like actual gods create islands on an endless sea using ETH with the hope to collect more of it from the other players. Alliances and betrayal are part of the arsenal as factions battle for the control of the world.'
+  text: 'Bomber Woman'
+  tagline: ' An onchain Bomberman, a fun simultaneous turn based game where player attempt to bomb each other'
   image:
     src: /logo.png
     width: 512
     height: 512
-    alt: BomberWoman Logo
+    alt: Bomber Woman Logo
   actions:
     - theme: brand
       text: Guide
@@ -18,61 +18,16 @@ hero:
     - theme: alt
       text: Contracts
       link: /contracts/BomberWoman/
-    - theme: brand
-      text: Extend
-      link: /guide/extending-the-world/
 
 features:
+  - title: Fun
+    details: Blast each other in frantic turn
   - title: Permission-less
     details: Any player can join at any time.
   - title: Persistent
     details: The game never ends
-  - title: Composable
-    details: New Games are being built on top.
 ---
 
-<script setup>
-import { ref } from 'vue'
-
-const obj = ref({
-  type: 'Idle',
-  // working: false, TODO
-  message: ""
-})
-
-function acknowledge() {
-  obj.value.type = 'Idle';
-}
-async function subscribe(e) {
-  e.preventDefault();
-  console.log("subscribing...");
-  const form = document.getElementById('subscribeForm');;
-  const formData = new FormData(form);
-  const data = new URLSearchParams([...formData]);
-  console.log({ data: data.toString() });
-  try {
-      const result = await fetch(form.action, {
-          method: form.method,
-          body: data,
-      });
-      const json = await result.json();
-      console.log(json);
-      if (json.error) {
-          throw new Error(json.error);
-      }
-      if (json.message) {
-        obj.value = {type: 'Success', message : json.message};
-      } else {
-        obj.value = {type: 'Success', message : "Noted, You'll receive an email to confirm your subscription"};
-      }
-  } catch (e) {
-    obj.value = { type: 'Error', message: e.message || '' + e };
-  } finally {
-    setTimeout(() => acknowledge(), 5000);
-  }
-}
-
-</script>
 
 <div class="custom-layout">
  <h1>

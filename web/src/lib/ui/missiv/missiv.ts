@@ -11,7 +11,7 @@ export const conversations = setup(
 	MISSIV_URI
 		? {
 				endpoint: MISSIV_URI,
-				domain: 'bomberWoman.world',
+				domain: 'bomber-woman.world',
 				namespace: initialContractsInfos.name,
 			}
 		: undefined,

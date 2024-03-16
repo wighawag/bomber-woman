@@ -60,7 +60,7 @@
 			</p>
 			<p>
 				You can read about the specific rule in our <a
-					href="https://bomberWoman.world/"
+					href="https://bomber-woman.world/"
 					target="_blank"
 					rel="noreferer noopener">docs</a
 				>.

@@ -1,5 +1,5 @@
 @font-face {
-  font-family: 'Rank9h';
+  font-family: 'Retr';
   src: url('/Rank\ 9h.ttf');
 }
 
@@ -42,10 +42,10 @@
 }
 
 .dark {
-  --vp-c-bg: #240417;
-  --vp-c-bg-alt: #1f0314;
-  --vp-c-bg-elv: #1f0314;
-  --vp-c-bg-soft: #3e0326;
+  --vp-c-bg: #1e6293;
+  --vp-c-bg-alt: #2f98c7;
+  --vp-c-bg-elv: #2f98c7;
+  --vp-c-bg-soft: rgb(31, 46, 119);
 }
 
 
