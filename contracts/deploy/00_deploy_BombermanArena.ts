@@ -6,16 +6,15 @@ export default execute(
 	context,
 	async ({deployViaProxy, accounts, artifacts}) => {
 		await deployViaProxy(
-			'Registry',
+			'BombermanArena',
 			{
 				account: accounts.deployer,
-				artifact: artifacts.GreetingsRegistry,
-				args: [''],
+				artifact: artifacts.BombermanArena,
 			},
 			{
 				owner: accounts.deployer,
 			},
 		);
 	},
-	{tags: ['Registry', 'Registry_deploy']},
+	{tags: ['BombermanArena', 'BombermanArena_deploy']},
 );
