@@ -1,0 +1,27 @@
+node_modules
+.vscode/*
+!*.default
+*.local
+
+# rocketh
+generated
+deployments/localhost
+deployments/lan
+_metadata
+
+# hardhat
+/coverage
+/coverage.json
+/coverage-data.json
+cache
+artifacts
+docs
+
+# foundry
+forge-cache/
+forge-artifacts/
+
+# Note: by default we ignore lib/forge-std as we do not use submodules
+# install it via `git clone --recursive https://github.com/foundry-rs/forge-std.git lib/forge-std`
+lib/forge-std
+
