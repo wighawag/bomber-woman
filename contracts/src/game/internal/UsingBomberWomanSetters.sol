@@ -46,7 +46,18 @@ abstract contract UsingBomberWomanSetters is UsingBomberWomanState, UsingBomberW
                     position = next;
                 }
                 if (actions[i].actionType == ActionType.Bomb && !_cells[position][epoch].exploded) {
-                    _cells[position][epoch].exploded = true;
+                    int8 length = 8; // TODO make bomb line length depends on power-ups
+
+                    // TODO optimize by making cell 1 bit and pack them in 256 bits
+                    // this allow to represent 16x16 per slot
+                    for (int8 k = -length / 2; k < length / 2; k++) {
+                        uint64 explosionPos = PositionUtils.offset(position, k, 0);
+                        _cells[explosionPos][epoch].exploded = true;
+                    }
+                    for (int8 k = -length / 2; k < length / 2; k++) {
+                        uint64 explosionPos = PositionUtils.offset(position, 0, k);
+                        _cells[explosionPos][epoch].exploded = true;
+                    }
                 }
             }
         }
