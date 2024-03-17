@@ -5,9 +5,8 @@ import "./UsingBomberWomanState.sol";
 import "../interface/UsingBomberWomanEvents.sol";
 import "./UsingBomberWomanUtils.sol";
 import "../../utils/PositionUtils.sol";
-import "solidity-kit/solc_0_8/ERC721/interfaces/UsingERC721Events.sol";
 
-abstract contract UsingBomberWomanSetters is UsingBomberWomanState, UsingBomberWomanUtils, UsingERC721Events {
+abstract contract UsingBomberWomanSetters is UsingBomberWomanState, UsingBomberWomanUtils {
     using PositionUtils for uint64;
 
     constructor(Config memory config) UsingBomberWomanState(config) {}
