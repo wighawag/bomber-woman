@@ -42,9 +42,8 @@ interface IBomberWomanReveal is UsingBomberWomanTypes, UsingBomberWomanEvents {
     /// @param payee address to send ETH to along the reveal
     function reveal(AvatarMove[] calldata moves, address payable payee) external payable;
 
-    /// @notice should only be called as last resort
-    /// this will burn all tokens in reserve
-    /// If player has access to the secret, better call `acknowledgeMissedReveal`
+    /// @notice called when an avatar did not reveal in time
+    /// this will drop all staked token in game for other to capture
     function acknowledgeMissedReveals(uint256[] memory avatarIDs) external;
 }
 
