@@ -50,6 +50,7 @@ abstract contract UsingBomberWomanSetters is UsingBomberWomanState, UsingBomberW
                 }
             }
         }
+        _avatars[avatarID].position = position;
     }
 
     function _isValidMove(uint64 from, uint64 to) internal pure returns (bool valid) {
