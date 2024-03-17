@@ -1,6 +1,6 @@
 @font-face {
-  font-family: 'Retr';
-  src: url('/Rank\ 9h.ttf');
+  font-family: 'RetroGaming';
+  src: url('/RetroGaming.ttf');
 }
 
 /* :root {
@@ -21,9 +21,9 @@
 }
 
 :root {
-  --vp-c-bomber-woman-1: #6EBD68;
-  --vp-c-bomber-woman-2: #073D03;
-  --vp-c-bomber-woman-3: #2C7D25;
+  --vp-c-bomber-woman-1: #C7C130;
+  --vp-c-bomber-woman-2: #f3112f;
+  --vp-c-bomber-woman-3: #C73044; /* #23FC7B;*/
   --vp-c-bomber-woman-soft: rgba(162, 28, 175, 0.14);
 }
 
@@ -43,7 +43,7 @@
 
 .dark {
   --vp-c-bg: #1e6293;
-  --vp-c-bg-alt: #2f98c7;
+  --vp-c-bg-alt: #1c5f7e;
   --vp-c-bg-elv: #2f98c7;
   --vp-c-bg-soft: rgb(31, 46, 119);
 }

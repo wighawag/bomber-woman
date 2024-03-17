@@ -32,7 +32,7 @@ export default defineConfig({
 	title,
 	description,
 	head: [
-    [
+		[
 			'script',
 			{id: 'plausible'},
 			`;(() => {
@@ -69,7 +69,7 @@ export default defineConfig({
 		['meta', {name: 'twitter:title', content: title}],
 		['meta', {name: 'twitter:description', content: description}],
 		['meta', {name: 'twitter:card', content: 'summary_large_image'}],
-		['meta',{name: 'twitter:image', content: preview}],
+		['meta', {name: 'twitter:image', content: preview}],
 	],
 	themeConfig: {
 		logo: '/logo.png',
@@ -105,32 +105,31 @@ export default defineConfig({
 			copyright: 'Copyright © 2022-present Ronan Sandford',
 		},
 	},
+	appearance: 'force-dark',
 	rewrites: {
 		'contracts/:pkg.md': 'contracts/:pkg/index.md',
 	},
 	transformHead: ({pageData}) => {
-		
-		const head: HeadConfig[] = []
+		const head: HeadConfig[] = [];
 
 		if (pageData.frontmatter.title) {
 			head.push(['title', {}, pageData.frontmatter.title]);
-			head.push(['meta', { name: 'og:title', content: pageData.frontmatter.title }])
-			head.push(['meta', { name: 'twitter:title', content: pageData.frontmatter.title }])
+			head.push(['meta', {name: 'og:title', content: pageData.frontmatter.title}]);
+			head.push(['meta', {name: 'twitter:title', content: pageData.frontmatter.title}]);
 		}
-		  
+
 		if (pageData.frontmatter.description) {
-			head.push(['meta', { name: 'description', content: pageData.frontmatter.description }])
-			head.push(['meta', { name: 'og:description', content: pageData.frontmatter.description }])
-			head.push(['meta', { name: 'twitter:description', content: pageData.frontmatter.description }])
+			head.push(['meta', {name: 'description', content: pageData.frontmatter.description}]);
+			head.push(['meta', {name: 'og:description', content: pageData.frontmatter.description}]);
+			head.push(['meta', {name: 'twitter:description', content: pageData.frontmatter.description}]);
 		}
-	  
-	  
+
 		if (pageData.frontmatter.image) {
-			head.push(['meta', { name: 'og:image', content: `${host}${pageData.frontmatter.image}` }])
-			head.push(['meta', { name: 'twitter:image', content: `${host}${pageData.frontmatter.image}` }])
-			head.push(['meta', { name: 'twitter:card', content: 'summary_large_image' }])
+			head.push(['meta', {name: 'og:image', content: `${host}${pageData.frontmatter.image}`}]);
+			head.push(['meta', {name: 'twitter:image', content: `${host}${pageData.frontmatter.image}`}]);
+			head.push(['meta', {name: 'twitter:card', content: 'summary_large_image'}]);
 		}
-		
+
 		const filepath = '/' + pageData.filePath;
 		const base = path.basename(filepath);
 		const dir = path.dirname(filepath);
@@ -142,12 +141,11 @@ export default defineConfig({
 			} else {
 				pathname = dir + '/';
 			}
-			
 		} else {
 			const baseWithoutExtension = path.basename(filepath, '.md');
 			pathname = dir + '/' + baseWithoutExtension + '/';
-		} 
-	
-		head.push(['link', { rel: '“canonical”', href: `${host}${pathname}` }]);
-	}
+		}
+
+		head.push(['link', {rel: '“canonical”', href: `${host}${pathname}`}]);
+	},
 });
