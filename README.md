@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://bomber-woman.world">
+  <a href="https://wighawag.github.io/bomber-woman/">
     <img src="docs/public/icon.png" alt="Bomber Woman Logo" width="500">
   </a>
 </p>

@@ -23,7 +23,7 @@ const isRunningOnVercel = !!process.env.VERCEL;
 
 const description = 'Bomber Woman is a fun simultaneous turn based game where player attempt to bomb each other';
 const title = 'Bomber Woman';
-const host = `https://bomber-woman.world`;
+const host = `https://wighawag.github.io/bomber-woman/`;
 const preview = `${host}/preview.png`;
 
 // https://vitepress.dev/reference/site-config
