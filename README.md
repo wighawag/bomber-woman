@@ -30,7 +30,7 @@
    > Before cloning you will need to have [git LFS (Large File Storage)](https://git-lfs.com/) installed
 
    ```
-   git clone https://github.com/wighawag/bomberWoman.git
+   git clone https://github.com/wighawag/bomber-woman.git
    cd bomberWoman
    ```
 
